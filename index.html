@@ -2699,9 +2699,14 @@ async function ghFetch(path, options = {}) {
 }
 
 async function loadConfig() {
+  // Site config (non-secret) loaded from config.json
+  // User list is injected at build time by GitHub Actions from repository secret
   try {
     const res = await fetch('config.json?_=' + Date.now());
-    siteConfig = await res.json();
+    const base = await res.json();
+    // __USERS_INJECT__ is replaced by the build script with the actual user list
+    const injectedUsers = __USERS_INJECT__;
+    siteConfig = { ...base, users: injectedUsers };
   } catch(e) {
     siteConfig = { site: { repo: '', branch: 'main' }, users: [], roles: {} };
   }
