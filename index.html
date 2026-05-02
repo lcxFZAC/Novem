@@ -2874,6 +2874,16 @@ function logout() {
 }
 
 // ===== LOCK UI (now driven by auth) =====
+function toggleLock() {
+  if (!currentUser) {
+    openTokenModal();
+  } else if (userPerms.can_edit) {
+    showToast('✅ 已有编辑权限，可直接点击页面右上角「编辑」按钮');
+  } else {
+    showToast('⚠️ 当前账号无编辑权限，请联系管理员');
+  }
+}
+
 function updateLockUI() {
   const newPageBtn = document.getElementById('new-page-btn');
   const editBtn = document.getElementById('edit-btn');
@@ -2889,6 +2899,22 @@ function updateLockUI() {
   const isCustomPage = currentPage && currentPage.startsWith('page_');
   if (userPerms.can_delete && isCustomPage) deleteBtn.classList.add('show');
   else deleteBtn.classList.remove('show');
+
+  // Update lock button appearance
+  const lockBtn = document.getElementById('lock-btn');
+  const lockIcon = document.getElementById('lock-icon');
+  const lockLabel = document.getElementById('lock-label');
+  if (lockBtn && lockIcon && lockLabel) {
+    if (userPerms.can_edit) {
+      lockBtn.classList.add('unlocked');
+      lockIcon.textContent = '🔓';
+      lockLabel.textContent = '编辑已解锁';
+    } else {
+      lockBtn.classList.remove('unlocked');
+      lockIcon.textContent = '🔒';
+      lockLabel.textContent = currentUser ? '无编辑权限' : '解锁编辑';
+    }
+  }
 }
 
 // ===== NAV =====
@@ -2920,7 +2946,7 @@ function navigate(id) {
   currentPage = id;
   renderPage(page);
   renderNav();
-  if (unlocked) updateLockUI();
+  updateLockUI();
 }
 
 // ===== RENDER PAGE =====
@@ -2941,7 +2967,7 @@ function renderPage(page) {
   `;
 
   // Show edit button if unlocked
-  document.getElementById('edit-btn').classList.toggle('show', unlocked);
+  document.getElementById('edit-btn').classList.toggle('show', userPerms.can_edit);
 }
 
 // ===== MARKDOWN RENDERER =====
