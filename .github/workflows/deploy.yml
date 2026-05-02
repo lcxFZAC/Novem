@@ -28,43 +28,29 @@ jobs:
         env:
           WIKI_USERS: ${{ secrets.WIKI_USERS }}
         run: |
-          # Replace __USERS_INJECT__ placeholder in index.html with the secret value.
-          # WIKI_USERS must be valid JSON, e.g.:
-          # [{"github_username":"alice","role":"admin"},{"github_username":"bob","role":"editor"}]
-          #
-          # We write the secret to a temp file to avoid shell escaping issues,
-          # then use Python to do the substitution safely.
           echo "$WIKI_USERS" > /tmp/users.json
           python3 - << 'PYEOF'
           import json, sys
-
           with open('/tmp/users.json', 'r') as f:
               raw = f.read().strip()
-
           if not raw:
-              print("ERROR: WIKI_USERS secret is empty. Add it in Settings → Secrets → Actions.")
+              print("ERROR: WIKI_USERS secret is empty.")
               sys.exit(1)
-
           try:
               users = json.loads(raw)
           except json.JSONDecodeError as e:
               print(f"ERROR: WIKI_USERS is not valid JSON: {e}")
               sys.exit(1)
-
           with open('index.html', 'r', encoding='utf-8') as f:
               html = f.read()
-
           if '__USERS_INJECT__' not in html:
-              print("ERROR: __USERS_INJECT__ placeholder not found in index.html")
+              print("ERROR: placeholder not found in index.html")
               sys.exit(1)
-
           users_js = json.dumps(users, ensure_ascii=False)
           html = html.replace('__USERS_INJECT__', users_js)
-
           with open('index.html', 'w', encoding='utf-8') as f:
               f.write(html)
-
-          print(f"✓ Injected {len(users)} user(s) into index.html")
+          print(f"Injected {len(users)} user(s)")
           PYEOF
 
       - name: Setup Pages
