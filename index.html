@@ -985,9 +985,176 @@
   color: var(--smoke);
   padding: 4px 8px;
 }
+
+/* ===== PRELOADER ===== */
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#preloader-bg {
+  position: absolute;
+  inset: -20px;
+  background:
+    url('preloader-bg.jpg') center/cover no-repeat,
+    radial-gradient(ellipse at 70% 30%, #3d1a06 0%, #1a0a04 40%, #0d0520 70%, #05020f 100%);
+  filter: blur(12px);
+  transform: scale(1.05);
+}
+
+#preloader-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,5,2,0.55) 0%,
+    rgba(20,8,3,0.45) 40%,
+    rgba(10,5,2,0.65) 100%
+  );
+}
+
+#preloader-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  animation: preloader-rise 1.2s ease both;
+}
+
+@keyframes preloader-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#preloader-lantern {
+  font-size: 48px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 18px rgba(220,80,30,0.8));
+  animation: lantern-sway 3s ease-in-out infinite alternate;
+}
+
+@keyframes lantern-sway {
+  from { transform: rotate(-4deg) translateY(0); }
+  to   { transform: rotate(4deg) translateY(-6px); }
+}
+
+#preloader-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 900;
+  color: #f5e8c0;
+  letter-spacing: 0.25em;
+  text-shadow:
+    0 0 40px rgba(212,160,23,0.7),
+    0 0 80px rgba(212,160,23,0.3),
+    2px 2px 0 rgba(0,0,0,0.6);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+#preloader-divider {
+  width: 220px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,160,23,0.8), transparent);
+  margin: 22px 0;
+  position: relative;
+}
+
+#preloader-divider::before,
+#preloader-divider::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold2);
+  font-size: 8px;
+  opacity: 0.8;
+}
+
+#preloader-divider::before { left: 50%; transform: translate(-50%, -50%); }
+#preloader-divider::after { display: none; }
+
+#preloader-sub {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 13px;
+  color: rgba(245,232,192,0.55);
+  letter-spacing: 0.35em;
+  margin-bottom: 36px;
+}
+
+#preloader-enter {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  color: #f5e8c0;
+  background: transparent;
+  border: 1px solid rgba(212,160,23,0.6);
+  padding: 14px 52px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s ease;
+  outline: none;
+  text-indent: 0.5em;
+}
+
+#preloader-enter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(212,160,23,0.12);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+#preloader-enter:hover {
+  border-color: rgba(212,160,23,0.9);
+  color: #fff;
+  text-shadow: 0 0 16px rgba(212,160,23,0.8);
+  box-shadow: 0 0 28px rgba(212,160,23,0.25), inset 0 0 28px rgba(212,160,23,0.08);
+}
+
+#preloader-enter:hover::before {
+  transform: scaleX(1);
+}
+
+#preloader-enter:active {
+  transform: scale(0.97);
+}
 </style>
 <!-- __WIKI_USERS_SCRIPT__ -->
 </head>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div id="preloader-bg"></div>
+  <div id="preloader-overlay"></div>
+  <div id="preloader-content">
+    <div id="preloader-lantern">🏮</div>
+    <div id="preloader-title">欢迎来到玖镇</div>
+    <div id="preloader-divider"></div>
+    <div id="preloader-sub">华夏玖镇 · 世界知识库</div>
+    <button id="preloader-enter" onclick="enterSite()">进　入</button>
+  </div>
+</div>
+
 <div id="app">
   <!-- SIDEBAR -->
   <nav id="sidebar">
@@ -1120,6 +1287,25 @@
 </div>
 
 <script>
+// ===== PRELOADER =====
+(function() {
+  const bg = document.getElementById('preloader-bg');
+  const img = new Image();
+  img.onload = function() {
+    bg.style.backgroundImage = `url('${img.src}'), radial-gradient(ellipse at 70% 30%, #3d1a06 0%, #1a0a04 40%, #0d0520 70%, #05020f 100%)`;
+  };
+  img.onerror = function() {
+    console.warn('[Preloader] 图片加载失败，使用渐变背景');
+  };
+  img.src = 'preloader-bg.jpg';
+})();
+
+function enterSite() {
+  const el = document.getElementById('preloader');
+  el.classList.add('hidden');
+  el.addEventListener('transitionend', () => el.remove(), { once: true });
+}
+
 // ===== CONFIG =====
 const REPO = '';  // will be loaded from config.json
 const BRANCH = 'main';
