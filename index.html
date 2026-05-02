@@ -2824,7 +2824,7 @@ function updateAuthUI() {
   const sidebar = document.getElementById('auth-status-sidebar');
   if (sidebar) {
     if (!currentUser) {
-      sidebar.innerHTML = '<button onclick="openTokenModal()" style="width:100%;padding:9px;border-radius:4px;border:1px solid rgba(180,134,11,0.35);background:rgba(180,134,11,0.08);color:rgba(245,239,224,0.6);font-family:Noto Sans SC,sans-serif;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(180,134,11,0.18)';this.style.color='#d4a017'" onmouseout="this.style.background='rgba(180,134,11,0.08)';this.style.color='rgba(245,239,224,0.6)'">🔑 GitHub 登录以编辑</button>';
+      sidebar.innerHTML = `<button onclick="openTokenModal()" style="width:100%;padding:9px;border-radius:4px;border:1px solid rgba(180,134,11,0.35);background:rgba(180,134,11,0.08);color:rgba(245,239,224,0.6);font-family:Noto Sans SC,sans-serif;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(180,134,11,0.18)';this.style.color='#d4a017'" onmouseout="this.style.background='rgba(180,134,11,0.08)';this.style.color='rgba(245,239,224,0.6)'">🔑 GitHub 登录以编辑</button>`;
     } else {
       const canEdit = userPerms.can_edit;
       sidebar.innerHTML = `<div style="font-size:11px;color:rgba(180,134,11,0.5);font-family:Noto Sans SC,sans-serif;text-align:center;padding:4px 0">已登录为 ${currentUser.login}</div>`;
