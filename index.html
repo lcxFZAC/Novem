@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玖镇秘典 — 世界知识库</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1209;
+    --paper: #f5efe0;
+    --paper2: #ede4cc;
+    --red: #8b1a1a;
+    --red2: #c0392b;
+    --gold: #b8860b;
+    --gold2: #d4a017;
+    --jade: #1a5c4a;
+    --jade2: #2e8b57;
+    --smoke: #6b5f4e;
+    --border: #c5a96f;
+    --scroll: #d4c89a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif SC', serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8860b' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ===== LAYOUT ===== */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: linear-gradient(180deg, #2c1810 0%, #1a0f0a 100%);
+    border-right: 3px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  #sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid rgba(180,134,11,0.3);
+    text-align: center;
+  }
+
+  #sidebar-logo .title-zh {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gold2);
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px rgba(212,160,23,0.4);
+    line-height: 1;
+  }
+
+  #sidebar-logo .subtitle {
+    font-size: 11px;
+    color: rgba(212,160,23,0.5);
+    letter-spacing: 3px;
+    margin-top: 6px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .sidebar-section {
+    padding: 10px 12px 4px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(180,134,11,0.45);
+    font-family: 'Noto Sans SC', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex; align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: rgba(245,239,224,0.7);
+    font-size: 14px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    gap: 10px;
+    user-select: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(180,134,11,0.12);
+    color: var(--gold2);
+    border-left-color: var(--gold);
+  }
+
+  .nav-item.active {
+    background: rgba(180,134,11,0.18);
+    color: var(--gold2);
+    border-left-color: var(--gold2);
+    font-weight: 600;
+  }
+
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+  .sidebar-divider {
+    height: 1px;
+    background: rgba(180,134,11,0.15);
+    margin: 8px 16px;
+  }
+
+  #sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid rgba(180,134,11,0.2);
+  }
+
+  /* ===== EDIT LOCK ===== */
+  #lock-btn {
+    width: 100%;
+    padding: 9px;
+    border-radius: 4px;
+    border: 1px solid rgba(180,134,11,0.35);
+    background: rgba(180,134,11,0.08);
+    color: rgba(245,239,224,0.6);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  #lock-btn:hover { background: rgba(180,134,11,0.18); color: var(--gold2); }
+  #lock-btn.unlocked { border-color: var(--jade2); color: #4caf50; background: rgba(46,139,87,0.1); }
+
+  /* ===== MAIN ===== */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ===== TOPBAR ===== */
+  #topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245,239,224,0.97);
+    border-bottom: 2px solid var(--border);
+    padding: 12px 32px;
+    display: flex; align-items: center; gap: 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 12px rgba(139,90,43,0.1);
+  }
+
+  #breadcrumb {
+    font-size: 13px;
+    color: var(--smoke);
+    flex: 1;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  #breadcrumb span { color: var(--gold); margin: 0 6px; }
+
+  #search-wrap { position: relative; }
+  #search {
+    padding: 7px 14px 7px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.6);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    width: 240px;
+    transition: all 0.2s;
+    color: var(--ink);
+  }
+  #search:focus { outline: none; border-color: var(--gold); background: #fff; width: 300px; }
+  #search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 14px; color: var(--smoke); pointer-events: none;
+  }
+
+  #edit-btn {
+    padding: 7px 16px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: none;
+  }
+  #edit-btn:hover { background: var(--red2); }
+  #edit-btn.show { display: inline-block; }
+
+  #save-btn {
+    padding: 7px 16px;
+    background: var(--jade);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: none;
+  }
+  #save-btn:hover { background: var(--jade2); }
+  #save-btn.show { display: inline-block; }
+
+  #delete-btn {
+    padding: 7px 16px;
+    background: transparent;
+    color: var(--red);
+    border: 1px solid rgba(139,26,26,0.35);
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  #delete-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  #delete-btn.show { display: inline-block; }
+
+  /* ===== CONFIRM DELETE MODAL ===== */
+  #confirm-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,12,5,0.88);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+  }
+  #confirm-overlay.show { display: flex; }
+
+  #confirm-modal {
+    background: var(--paper);
+    border: 2px solid var(--red);
+    border-radius: 8px;
+    padding: 32px 36px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+  #confirm-modal .confirm-icon { font-size: 36px; margin-bottom: 12px; }
+  #confirm-modal h2 { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--red); margin-bottom: 8px; }
+  #confirm-modal p { font-size: 13px; color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; margin-bottom: 24px; line-height: 1.7; }
+  #confirm-modal .confirm-btns { display: flex; gap: 12px; }
+  #confirm-modal .confirm-btns button { flex: 1; padding: 10px; border-radius: 4px; font-family: 'Noto Sans SC', sans-serif; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; }
+  .confirm-cancel { background: var(--paper2); color: var(--smoke); border: 1px solid var(--border) !important; }
+  .confirm-cancel:hover { background: var(--scroll); }
+  .confirm-delete { background: var(--red); color: #fff; }
+  .confirm-delete:hover { background: var(--red2); }
+
+  /* ===== CONTENT ===== */
+  #content {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    left: -48px; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--gold2), transparent);
+  }
+
+  .page-tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--ink);
+    letter-spacing: 4px;
+    line-height: 1.2;
+  }
+
+  .page-desc {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    line-height: 1.8;
+  }
+
+  /* ===== ARTICLE CONTENT ===== */
+  .wiki-content h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--red);
+    margin: 32px 0 14px;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, rgba(139,26,26,0.07), transparent);
+    border-left: 4px solid var(--red);
+    letter-spacing: 2px;
+  }
+
+  .wiki-content h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gold);
+    margin: 24px 0 10px;
+    letter-spacing: 1px;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 6px;
+  }
+
+  .wiki-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--jade);
+    margin: 18px 0 8px;
+    letter-spacing: 1px;
+  }
+
+  .wiki-content p {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: #2a1f0e;
+    margin-bottom: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .wiki-content ul, .wiki-content ol {
+    padding-left: 24px;
+    margin-bottom: 14px;
+  }
+
+  .wiki-content li {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #2a1f0e;
+    margin-bottom: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .wiki-content strong {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .wiki-content em {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* ===== CARDS ===== */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+    transform-origin: left;
+  }
+
+  .card:hover { border-color: var(--gold); box-shadow: 0 6px 24px rgba(139,90,43,0.12); transform: translateY(-2px); }
+  .card:hover::before { transform: scaleX(1); }
+
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card-title { font-size: 18px; font-weight: 700; color: var(--ink); letter-spacing: 2px; margin-bottom: 6px; }
+  .card-desc { font-size: 12.5px; color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; line-height: 1.7; }
+
+  /* ===== STAT TABLE ===== */
+  .stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 13.5px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .stat-table th {
+    background: linear-gradient(90deg, var(--red), #6b1010);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .stat-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(197,169,111,0.25);
+    vertical-align: top;
+    line-height: 1.7;
+  }
+
+  .stat-table tr:nth-child(even) td { background: rgba(197,169,111,0.06); }
+  .stat-table tr:hover td { background: rgba(180,134,11,0.08); }
+
+  /* ===== SKILL BOX ===== */
+  .skill-box {
+    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(245,239,224,0.8));
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--jade);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 10px 0;
+  }
+
+  .skill-box .skill-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--jade);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .skill-box .skill-cost {
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(180,134,11,0.1);
+    border: 1px solid rgba(180,134,11,0.3);
+    border-radius: 12px;
+    padding: 1px 8px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .skill-box p {
+    font-size: 13.5px;
+    color: var(--smoke);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .trait-box {
+    background: rgba(139,26,26,0.04);
+    border: 1px solid rgba(139,26,26,0.2);
+    border-left: 4px solid var(--red);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 8px 0;
+  }
+
+  .trait-box .trait-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 4px;
+  }
+
+  .trait-box p { font-size: 13.5px; margin: 0; }
+
+  /* ===== INLINE EDITOR ===== */
+  #editor-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,12,5,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  #editor-overlay.show { display: flex; }
+
+  #editor-modal {
+    background: var(--paper);
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    width: 90vw;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  }
+
+  #editor-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    background: #fff;
+  }
+
+  #editor-title-input {
+    flex: 1;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    background: transparent;
+  }
+
+  #editor-close {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  #editor-close:hover { background: var(--paper2); }
+
+  #editor-toolbar {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper2);
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  .tb-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+
+  #editor-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  #editor-textarea {
+    width: 100%;
+    min-height: 400px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    line-height: 1.9;
+    border: none;
+    outline: none;
+    background: transparent;
+    resize: none;
+    color: var(--ink);
+  }
+
+  #editor-footer {
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px;
+    background: #fff;
+  }
+
+  .btn-primary {
+    padding: 8px 20px;
+    background: var(--jade);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--jade2); }
+
+  .btn-danger {
+    padding: 8px 20px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-danger:hover { background: var(--red2); }
+
+  /* ===== PASSWORD MODAL ===== */
+  #pw-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,12,5,0.92);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+  }
+  #pw-overlay.show { display: flex; }
+
+  #pw-modal {
+    background: var(--paper);
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 36px 40px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+
+  #pw-modal h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  #pw-modal p {
+    font-size: 13px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 24px;
+  }
+
+  #pw-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 4px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.8);
+    margin-bottom: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #pw-input:focus { border-color: var(--gold); }
+  #pw-error { color: var(--red); font-size: 12px; font-family: 'Noto Sans SC', sans-serif; height: 18px; margin-bottom: 12px; }
+
+  #pw-submit {
+    width: 100%;
+    padding: 12px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #pw-submit:hover { background: var(--red2); }
+
+  #pw-cancel-btn {
+    display: block;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: var(--smoke);
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    cursor: pointer;
+  }
+
+  /* ===== SEARCH RESULTS ===== */
+  #search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 200;
+    display: none;
+  }
+  #search-results.show { display: block; }
+
+  .search-hit {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(197,169,111,0.15);
+    transition: background 0.15s;
+  }
+  .search-hit:hover { background: rgba(180,134,11,0.07); }
+  .search-hit .hit-title { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .search-hit .hit-excerpt { font-size: 12px; color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; margin-top: 2px; line-height: 1.5; }
+  .search-hit mark { background: rgba(180,134,11,0.25); color: var(--gold); border-radius: 2px; padding: 0 1px; }
+
+  /* ===== TOAST ===== */
+  #toast {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: var(--jade);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ===== PROGRESS BARS ===== */
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+
+  .level-card {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 12px 14px;
+  }
+
+  .level-card .lc-range { font-size: 12px; color: var(--gold); font-weight: 600; font-family: 'Noto Sans SC', sans-serif; }
+  .level-card .lc-name { font-size: 14px; font-weight: 700; color: var(--ink); margin: 3px 0 6px; }
+  .level-bar { height: 4px; background: rgba(197,169,111,0.25); border-radius: 2px; }
+  .level-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gold), var(--red)); }
+
+  /* ===== NEW PAGE BTN ===== */
+  #new-page-btn {
+    width: 100%;
+    padding: 9px;
+    border-radius: 4px;
+    border: 1px dashed rgba(180,134,11,0.35);
+    background: transparent;
+    color: rgba(245,239,224,0.4);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: none;
+  }
+  #new-page-btn:hover { border-color: var(--gold2); color: var(--gold2); }
+  #new-page-btn.show { display: block; }
+
+  /* Inline section edit button */
+  .section-actions {
+    display: none;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .section-actions.show { display: flex; }
+  .sec-edit-btn {
+    padding: 3px 10px;
+    background: rgba(139,26,26,0.07);
+    border: 1px solid rgba(139,26,26,0.2);
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--red);
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.15s;
+  }
+  .sec-edit-btn:hover { background: var(--red); color: #fff; }
+
+  @media (max-width: 900px) {
+    #sidebar { width: 220px; min-width: 220px; }
+    #main { margin-left: 220px; }
+    #content { padding: 24px 24px; }
+  }
+</style>
+
+<style>
+/* ===== GITHUB AUTH ADDITIONS ===== */
+#auth-bar {
+  position: fixed; top: 0; right: 0; z-index: 500;
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+#login-btn {
+  padding: 6px 14px;
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+#login-btn:hover { background: var(--gold2); }
+
+#user-info {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px;
+  background: rgba(26,18,9,0.85);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  color: var(--gold2);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+}
+#user-avatar { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--gold); }
+#role-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(180,134,11,0.2);
+  border: 1px solid rgba(180,134,11,0.4);
+  color: var(--gold2);
+}
+#logout-btn {
+  background: none; border: none; color: rgba(245,239,224,0.4);
+  cursor: pointer; font-size: 11px; font-family: 'Noto Sans SC', sans-serif;
+  padding: 0; transition: color 0.2s;
+}
+#logout-btn:hover { color: var(--red); }
+
+/* ===== TOKEN INPUT MODAL ===== */
+#token-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(20,12,5,0.92);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+}
+#token-overlay.show { display: flex; }
+#token-modal {
+  background: var(--paper);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 36px 40px;
+  width: 460px;
+  max-width: 95vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+#token-modal h2 { font-size: 22px; font-weight: 700; letter-spacing: 4px; color: var(--ink); margin-bottom: 6px; }
+#token-modal .modal-sub { font-size: 13px; color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; margin-bottom: 20px; line-height: 1.6; }
+#token-modal .step-list { font-size: 12.5px; color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; line-height: 2; margin-bottom: 20px; padding-left: 16px; }
+#token-modal .step-list a { color: var(--gold); text-decoration: none; }
+#token-modal .step-list a:hover { text-decoration: underline; }
+#token-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--ink);
+  background: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#token-input:focus { border-color: var(--gold); }
+#token-error { color: var(--red); font-size: 12px; font-family: 'Noto Sans SC', sans-serif; height: 18px; margin-bottom: 12px; }
+#token-submit {
+  width: 100%;
+  padding: 11px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#token-submit:hover { background: var(--red2); }
+#token-cancel-btn {
+  display: block; margin-top: 12px; background: none; border: none;
+  color: var(--smoke); font-size: 12px; font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer; width: 100%; text-align: center;
+}
+
+/* Loading indicator */
+#save-status {
+  font-size: 12px;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--smoke);
+  padding: 4px 8px;
+}
+</style>
+</head>
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div id="sidebar-logo">
+      <div class="title-zh">玖镇秘典</div>
+      <div class="subtitle">世界知识库 · WIKI</div>
+    </div>
+    <div id="nav-container"></div>
+    <div id="sidebar-footer">
+      <button id="new-page-btn" onclick="newPage()">＋ 新建页面</button>
+      <button id="lock-btn" onclick="toggleLock()">
+        <span id="lock-icon">🔒</span>
+        <span id="lock-label">解锁编辑</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <div id="breadcrumb">玖镇秘典</div>
+      <div id="search-wrap">
+        <span id="search-icon">🔍</span>
+        <input id="search" type="text" placeholder="搜索秘典…" oninput="doSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
+        <div id="search-results"></div>
+      </div>
+      <button id="edit-btn" onclick="openEditor()">✏️ 编辑页面</button>
+      <button id="delete-btn" onclick="confirmDelete()">🗑️ 删除页面</button>
+      <button id="save-btn" onclick="saveFromTopbar()">💾 保存</button>
+    </div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div id="pw-overlay">
+  <div id="pw-modal">
+    <h2>解锁编辑</h2>
+    <p>请输入编辑密码以解锁秘典编辑权限</p>
+    <input id="pw-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')submitPw()">
+    <div id="pw-error"></div>
+    <button id="pw-submit" onclick="submitPw()">叩 关 进 入</button>
+    <button id="pw-cancel-btn" onclick="closePwModal()">取消</button>
+  </div>
+</div>
+
+<!-- EDITOR OVERLAY -->
+<div id="editor-overlay">
+  <div id="editor-modal">
+    <div id="editor-header">
+      <input id="editor-title-input" type="text" placeholder="页面标题…">
+      <button id="editor-close" onclick="closeEditor()">✕ 取消</button>
+    </div>
+    <div id="editor-toolbar">
+      <button class="tb-btn" onclick="insertMd('## ', '')">H2标题</button>
+      <button class="tb-btn" onclick="insertMd('### ', '')">H3标题</button>
+      <button class="tb-btn" onclick="insertMd('#### ', '')">H4标题</button>
+      <button class="tb-btn" onclick="insertMd('**', '**')">粗体</button>
+      <button class="tb-btn" onclick="insertMd('*', '*')">斜体</button>
+      <button class="tb-btn" onclick="insertMd('- ', '')">列表项</button>
+      <button class="tb-btn" onclick="insertMd('\n---\n', '')">分割线</button>
+      <button class="tb-btn" onclick="insertMd('> ', '')">引用块</button>
+    </div>
+    <div id="editor-body">
+      <textarea id="editor-textarea" placeholder="在此输入页面内容（支持 Markdown 格式）…"></textarea>
+    </div>
+    <div id="editor-footer">
+      <button class="btn-danger" onclick="closeEditor()">取消</button>
+      <button class="btn-primary" onclick="savePage()">保存页面</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div id="confirm-modal">
+    <div class="confirm-icon">🗑️</div>
+    <h2>删除页面</h2>
+    <p id="confirm-msg">确定要删除这个页面吗？<br>此操作无法撤销。</p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">取消</button>
+      <button class="confirm-delete" onclick="doDelete()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- GitHub Auth Bar (top-right) -->
+<div id="auth-bar">
+  <button id="login-btn" onclick="openTokenModal()" style="display:none">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    GitHub 登录
+  </button>
+  <div id="user-info" style="display:none">
+    <img id="user-avatar" src="" alt="">
+    <span id="user-name"></span>
+    <span id="role-badge"></span>
+    <button id="logout-btn" onclick="logout()">退出</button>
+  </div>
+</div>
+
+<!-- Token Input Modal -->
+<div id="token-overlay">
+  <div id="token-modal">
+    <h2>🔑 进入秘典</h2>
+    <p class="modal-sub">使用 GitHub Personal Access Token 登录，登录后系统将根据你的权限决定是否可以编辑。</p>
+    <ol class="step-list">
+      <li>访问 <a href="https://github.com/settings/tokens/new" target="_blank">GitHub Token 页面</a></li>
+      <li>Note 填任意名称（如 <code>玖镇Wiki</code>）</li>
+      <li>Expiration 选择有效期</li>
+      <li>勾选 <strong>repo</strong> 权限</li>
+      <li>点击 Generate token，复制粘贴到下方</li>
+    </ol>
+    <input id="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    <div id="token-error"></div>
+    <button id="token-submit" onclick="submitToken()">验证并登录</button>
+    <button id="token-cancel-btn" onclick="closeTokenModal()">取消</button>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const REPO = '';  // will be loaded from config.json
+const BRANCH = 'main';
+const DATA_FILE = 'data/pages.json';
+const CONFIG_FILE = 'config.json';
+const TOKEN_KEY = 'jiuzhen_gh_token';
+const STORAGE_KEY = 'jiuzhen_wiki_v3_cache';
+
+// ===== GLOBAL STATE =====
+let siteConfig = null;
+let ghToken = null;
+let currentUser = null;  // { login, avatar_url, name }
+let userRole = null;     // 'admin' | 'editor' | 'viewer' | null
+let userPerms = { can_edit: false, can_delete: false, can_create: false };
+
+const DEFAULT_PAGES = [
+  {
+    id: 'home',
+    title: '玖镇秘典',
+    icon: '🏮',
+    category: '总览',
+    tag: '世界观',
+    desc: '华夏玖镇世界知识库，记载九大家族的功法体系、规则与世界观。',
+    content: `## 欢迎来到华夏玖镇
+
+玖镇是围绕着华夏玖镇这个区域发散设计的一个世界。其本质上的设计都是以"玖镇"这个区域为基础设计。
+
+> 特别声明：本规则继承于《玖镇》的系列剧本，旨在完善玖镇世界观和丰富玖镇各项体系。
+
+## 九大家族
+
+玖镇由九个家族构成：
+
+**三大家族（主）**
+- 张家 — 雷火术法正统
+- 岳家 — 武学体系传承
+- 墨家 — 机关器械大宗
+
+**六小家族**
+- 药家 — 草药炼制之道
+- 曹家 — 未收录
+- 林家 — 风水阵法一脉
+- 易家 — 占卜铜钱异术
+- 亓家 — 鬼道符法传人
+- 巫家 — 附魔防护能力
+
+## 特殊组织
+
+此外还有一些特殊组织：官方政府、红山组织、乐正家等。故事的主要舞台基本上在华夏这个国家进行。
+
+## 关于本秘典
+
+本秘典收录了玖镇世界的完整规则体系，包括：
+- 各家族功法技能体系
+- 草药学完整列表
+- 通用特性与装备系统
+- 战斗规则与异常状态说明`
+  },
+  {
+    id: 'rules',
+    title: '玖镇规则',
+    icon: '📜',
+    category: '核心规则',
+    tag: '规则',
+    desc: '世界规则、角色创建、灵魂力系统、异常状态与地形。',
+    content: `## 角色创建
+
+### 属性体系
+
+一个角色的属性分为：**力量、体质、体型、敏捷、魅力、移动、智力、灵魂力**以及**幸运**。
+
+每一项属性都由一次 **3d6×5** 的骰子决定。
+
+| 属性 | 说明 |
+|------|------|
+| 力量 | 代表肌肉力量，影响近战武器伤害 |
+| 体质 | 对各类伤害的耐受能力，影响生命 |
+| 体型 | 身高体重，影响受击面积与生命 |
+| 敏捷 | 反应能力，决定技能速度 |
+| 魅力 | 对他人的影响力 |
+| 移动 | 短时间内移动距离 |
+| 智力 | 学习力与解密能力 |
+| 灵魂力 | 灵魂能量上限及精神攻击耐受，决定所有属性上限（每+5点属性上限+10） |
+| 幸运 | 字如其名 |
+
+### 个人要素
+
+- **生命**：10 +（体质+体型）/ 5
+- **法力**：灵魂力的一半
+- **物理护盾**：科技护盾
+- **法术护盾**：法术效果形成的护盾
+- **护甲/魔防**：等量减少魔法物理伤害
+- **灵魂值**：等同灵魂力，受灵魂攻击时优先扣除
+
+### 技能
+
+由KP决定职业技能属性合值（四倍某属性或四属性相加），兴趣为两属性相加或某属性二倍。
+
+- 闪避基础：20 +（敏捷-50）
+- 派系技能基础：40
+
+---
+
+## 灵魂力系统
+
+当24小时内受到5点或以上灵魂力伤害，陷入**暂时性灵魂虚弱状态**。
+
+从以下10种状态中随机抽取一种，持续至受到灵魂治疗：
+
+| 状态 | 效果 |
+|------|------|
+| 孱弱 | 法力降为10点，攻击判定降低一个等级 |
+| 昏迷 | 陷入昏迷状态 |
+| 虚火 | 无法压抑情绪，法力归零前无差别攻击 |
+| 迷茫 | 生命上限-10，法力上限-10，失去五感之一 |
+| 亏脉 | 无法收获任何增益buff |
+| 混乱 | 所有行动由骰娘决定 |
+| 鬼目 | 定期出现小鬼攻击（1生命，免疫物理，40攻/闪/敏） |
+| 窥天 | 可得知隐藏信息，治疗后受灵魂值×1d9天罚雷电伤害 |
+| 葬心 | 12小时未受灵魂治疗则灵魂上限永久减少 |
+| 解限 | 1分钟内法力体力视为无限，所有行动最低80成功率，之后法力归零体力为1 |
+
+- 灵魂力低于20 → 永久昏迷
+- 灵魂力低于10 → 死亡
+
+---
+
+## 异常状态
+
+| 状态 | 效果 |
+|------|------|
+| 麻痹 | 无法行动 |
+| 中毒 | 属性减值或持续扣血 |
+| 寒冷 | 技能速度-30 |
+| 催眠 | 陷入昏睡 |
+| 晕眩 | 无法瞄准 |
+| 灼热 | 持续伤害（可打断） |
+| 窒息 | 三回合内未解除则秒杀 |
+| 冥火 | 受到伤害增加50%，需次要行动解除 |
+| 冰冻 | 无法行动 |
+| 阴燃 | 灼热伤害+3，需主要行动解除 |
+| 浮空 | 无法闪避，慢速阶段或下一回合降落 |
+| 倒地 | 无法闪避，慢速阶段或下一回合起身 |
+| 定身 | 无法行动一回合 |
+| 截脉 | 无法使用MP技能一回合 |
+| 断命 | 受到物理攻击伤害+5一回合 |
+| 沉默 | 无法使用技能一回合 |
+| 恐惧 | 失去攻击欲望并试图逃跑 |
+| 窜稀 | 敏捷力量减半1d3回合（顶着用伤害+1d2，之后无法行动1d2回合） |
+
+**正面效果**：
+- **回春**：每回合恢复buff血量，血量满后停止，每回合buff值-1
+
+---
+
+## 地形系统
+
+| 地形 | 效果 |
+|------|------|
+| 水泽 | 移动力-20 |
+| 山石 | 潜行+10，闪避-10 |
+| 森林 | 潜行+10，移动力-10 |
+| 骨池 | 无法潜行，移动力-10 |
+| 阴燃火 | 每回合3+1d5灼烧伤害 |
+| 雪地 | 移动力和敏捷-10 |
+| 寒地 | 移动力和敏捷-30 |
+| 深渊 | 必须会飞才可移动 |
+| 郢都 | 生命视为1，灵魂力锁定不变 |
+| 道场 | 所有战斗行为无消耗 |
+| 世外桃源 | 法力值视为无限 |
+| 脉涌 | 随机出现属性地下喷泉，造成2d8伤害 |
+| 固元地 | 修行成功等级+1 |
+| 洞天福地 | 修行成功等级+2 |
+| 药田 | 仅一次恢复法力至上限 |
+| 阴地 | 每分钟10真实+1灵魂伤害，10分钟后死灵变异 |
+| 阳地 | 每分钟10真实+1灵魂伤害，10分钟后生灵变异 |`
+  },
+  {
+    id: 'combat',
+    title: '战斗规则',
+    icon: '⚔️',
+    category: '核心规则',
+    tag: '规则',
+    desc: '回合结构、技能速度分级、行动顺序与战斗阶段详解。',
+    content: `## 战斗机制概述
+
+技能分为**速攻技能（80+）、普通技能（30-80）、慢速技能（30以下）**三档。
+
+每回合可使用（**敏捷-20**）的数值分配到自己要用的技能上，增减均要消耗敏捷值。
+
+其他技能如斗殴等，速度根据熟练度（即成功率）来决定。
+
+---
+
+## 回合结构
+
+每一个战斗回合被分为三个阶段。每个角色每回合拥有**主要行动、次要行动**和**慢速行动**三次行动。
+
+### 第一阶段：回合开始
+
+- 仅**速攻技能**可以使用
+- 玩家和敌人均决定好技能后，按技能速度排序依次释放
+- 速度相同时，玩家优先行动
+- 此时的速攻技能消耗本回合的**次要行动**
+
+### 第二阶段：主要阶段
+
+- 可以使用**普通技能**和**速攻技能**，消耗**主要行动**
+- 次要行动除了预备防御、预备反击等预备动作外，也可以使用一些角色特性允许的技能
+- 也可以选择不使用次要行动，以保证在回合其他时间使用速攻技能
+
+### 第三阶段：攻后阶段
+
+- 可以消耗**慢速行动**使用慢速技能
+- 或消耗**次要行动**使用速攻技能
+
+### 敌方回合
+
+敌方回合时，可以使用次要行动执行**闪避**或**速攻技能**。
+
+---
+
+## 技能速度分级
+
+| 速度值 | 分类 | 行动消耗 |
+|--------|------|---------|
+| 80 以上 | 速攻技能 | 次要行动 |
+| 30 ~ 80 | 普通技能 | 主要行动 |
+| 30 以下 | 慢速技能 | 慢速行动 |
+
+---
+
+## 行动说明
+
+| 行动类型 | 说明 |
+|----------|------|
+| 主要行动 | 每回合一次，用于释放普通/速攻技能 |
+| 次要行动 | 每回合一次，可用于速攻技能、预备动作，或保留至攻后阶段 |
+| 慢速行动 | 每回合一次，仅在攻后阶段使用慢速技能 |
+| 预备动作 | 使用次要行动宣告：预备防御、预备反击、预备闪避、预备逃跑 |`
+  },
+  {
+    id: 'zhang',
+    title: '张家',
+    icon: '🌩️',
+    category: '九大家族',
+    tag: '家族',
+    desc: '雷火术法正统，符阵双修，道力修炼体系。',
+    content: `## 张家概述
+
+张家为玖镇三大主要家族之一，以**雷火术法**见长，走符、术、阵三道并修路线。
+
+**经验等级划分**：
+- 0-20：入门
+- 20-50：初阶
+- 50-80：中阶
+- 80+：高阶（上不封顶）
+
+特殊分界岭：10、35、65
+
+**道力成长**：大成功10，极难7+1d3，困难5+1d5，普通1+1d9，失败+2
+
+**符数成长**：大成功5，极难3+1d2，困难1+1d4，普通1+1d2，失败0
+
+---
+
+## 0-10 道力
+
+### 通用技能
+
+- **掌心雷**（术法 50速）：1d8+1 雷伤，消耗3法力值
+- **风符**（符法 50速）：增加闪避与敏捷值，每回合每+1点消耗1道力
+- **火符**（符法 50速）：分配道力得火焰伤害，余量得灼烧伤害
+- **水符**（符法 50速）：减少对面单体敏捷与闪避，消耗同风符
+- **土符**（符法 50速）：禁锢对方单体，对方可穿透攻击，土符存在时对方无法闪避
+
+### 入门特性
+
+- **雷法精通**：雷法伤害+5，必定造成50%麻痹
+- **道法正统**：可多携带两张符
+- **火法精通**：火法伤害+8，必定造成2回合1点灼燃
+
+---
+
+## 10-20 道力
+
+### 技能
+
+- **本家术法 镇鬼符**（80速）：让亡灵生物无法移动（可被反击），无攻击力
+- **本家术法 炼狱火**（50速）：升级版火符，对亡灵伤害翻倍；对非亡灵造成每回合2点灼烧+2点灵魂伤害，持续至战斗结束，消耗8法力值
+- **通用雷法**（符法 60速）：基础值4+1d(分配道力)，10%×道力概率麻痹（最高60%）；作为术法使用消耗5法力值
+- **通用传送**（符法 0速）：传送可物理进出的区域
+- **通用追踪**（符法 0速）：根据追踪目标相关物品或线索追踪
+
+### 特性
+
+- **亡灵之友**：非生命生物不会优先选择你作为攻击对象
+
+---
+
+## 20-35 道力（选择分支）
+
+### 术阵分支
+
+- **鬼视**（0速）：消耗5法力值，获得亡灵视野，可查看特殊事物
+- **鬼冥**（50速）：消耗10法力值，将小鬼属性（/4）和技能暂时加在自身
+- **鬼爆**（50速）：消耗12法力值，3d10爆炸伤害，附加一回合寒冷
+- **鬼灭阵**（10速）：每回合消耗7法力值，需一回合准备，阵中敌方失明，每回合1d5真实伤害
+
+### 炼鬼分支
+
+- **操鬼**（80速）：消耗5法力值，让小鬼本回合多一个主/次要行动
+- **震鬼**（80速）：消耗10法力值，让小鬼立即做出80速行动
+- **护鬼**（80速）：消耗6法力值，让小鬼替你阻挡一次攻击
+- **令鬼**（80速）：消耗8法力值，令小鬼下一次行动造成2倍效果
+
+### 特性（四选二）
+
+- **幽冥人**：受到物理伤害有15%概率无效
+- **鬼衣**：使用本家术法时获得4点护盾
+- **丁巳灵火**：炼制小鬼时50%概率增加某一属性20、某一技能10
+- **鬼医**：战后治疗小鬼，每次恢复1d10生命，耗半小时，可重复使用
+
+---
+
+## 35-50 道力
+
+### 通用阵法
+
+- **五行阵**（20速）：提前布阵，镇压所有五行中的人或物（最高平级），使用后消耗全部法力值，战斗中无法使用
+- **七星阵**（20速）：需剑为法器，战斗中两回合准备，第三回合发动，每回合对敌方全体造成10点物理伤害，中途受攻击视为打断，消耗10法力
+
+### 本家技能（5选3）
+
+- **幽冥火**（50速）：火法，对有生命生物造成双倍伤害，附着阴燃，消耗5法力值
+- **炼鬼阵**：每回合消耗4法力值，小鬼在阵中造成双倍伤害，敌方每回合判定体质，失败则寒冷一回合
+- **自爆**（50速）：同归于尽，造成20d20伤害，50米范围
+- **鬼身**（30速）：消耗8法力值，持续两回合，敌方攻击有40%概率不命中（必中除外）
+- **清心符**（30速）：恢复3点灵魂力，解除眩晕、昏迷、疯狂状态
+
+### 特性（八选二）
+
+- **炼鬼大师**：小鬼属性天生+5
+- **训鬼大师**：小鬼技能天生+10
+- **听凭符引**：符法发动成功等级+1
+- **术剑精通**：术法可以剑为媒介发动（同时造成剑伤和术法伤害）
+- **掣旗令阵**：阵法发动后不再需要持续消耗（需携带阵旗）
+- **掌中星辰**：每使用一次术法，下一次术法增加1d8星辰砸落物理伤害
+- **护身鬼**：所有小鬼优先帮你承受伤害，小鬼闪避必定不低于50
+- **幽冥树**：在幽冥树周围修炼可增加修习成功等级+1（仅限亓家子弟）
+
+---
+
+## 50-65 道力（技能5选2）
+
+- **鬼镰**（20速）：消耗8法力值，召唤镰刀，伤害4d8
+- **月引**（30速）：消耗5法力值，给一名小鬼附上回春3的buff
+- **梦中此月明！**（30速）：消耗15法力值，需一回合发动，成功则对敌方所有人造成昏睡效果及2d10真实伤害
+- **鬼火**（60速）：给小鬼攻击增加一次火法伤害，附着阴燃buff
+- **鬼神**（50速）：消耗一半法力值，己方小鬼属性技能全部翻倍，造成三倍伤害
+
+---
+
+## 65-80 道力（四选一）
+
+| 道路 | 效果 |
+|------|------|
+| 阵 | 阵法不再需要时间准备 |
+| 符 | 符法不再需要画符准备，但每张符法消耗5法力值 |
+| 术 | 术法不再受上限限制，可叠加各种特殊效果 |
+| 剑 | 剑法出神入化，每次攻击可带两道符或术法 |
+
+---
+
+## 80-90 道力（特性五选二）
+
+| 特性 | 效果 |
+|------|------|
+| 鬼师 | 小鬼不再有数量上限 |
+| 鬼人 | 属性如小鬼一般，增强小鬼的法术可用于自身 |
+| 火法大师 | 火法视为必定成功，不会失败 |
+| 雷法大师 | 雷法视为必定成功，不会失败 |
+| 本命鬼符 | 可制作本命鬼符，抵挡一次致死攻击，同时给对方5点不可避免真实伤害 |
+
+---
+
+## 小鬼系统
+
+**小鬼属性**：力量、敏捷、体质共200点自由分配，生命值20，灵魂10点，移动同主人，智力/魅力/体型无影响。
+
+**小鬼战斗**：近战或远程二选一，近战2d8，远程2d6。
+
+**小鬼技能**：斗殴初始60，闪避同敏捷。`
+  },
+  {
+    id: 'yue',
+    title: '岳家',
+    icon: '🥊',
+    category: '九大家族',
+    tag: '家族',
+    desc: '武学体系，拳枪双修，火书金铁双路线选择。',
+    content: `## 岳家概述
+
+岳家为玖镇三大主要家族之一，以**武学体系**为主，走拳法或枪法路线，兼修火书与金铁经。
+
+**经验等级**：每10经验为一个阶级
+
+**力量成长**：大成功7，极难成功5+1d2，困难成功3+1d4，普通成功1+1d6，失败+1
+
+---
+
+## 0-10 经验
+
+**获得特性：强身健体**（护甲+4，魔抗+2）
+
+### 拳路
+
+- **特性：《岳氏拳法》**——空手造成伤害+2
+- **技能：双拳**——次要行动变为主要行动
+
+### 枪路
+
+- **特性：《岳氏枪法》**——长枪造成伤害+2
+- **技能：回马枪**——闪避成功后追加一次主要行动
+
+---
+
+## 10-20 经验（生命值增加1d10+体质/5）
+
+### 特性（三选一）
+
+- **铁拳**：使用拳头攻击时，20%概率击中头部使对方眩晕一回合
+- **铁腕**：拳头伤害+1，长枪伤害+1
+- **霸枪**：使用枪攻击时，对方闪避需高你一个命中等级
+
+### 拳系技能
+
+- **上勾拳**（50速）：造成正常伤害，并使对方浮空
+- **连拳**（50速）：造成两次普通攻击伤害
+
+### 枪系技能
+
+- **枪花**（80速）：使对方命中等级降低1一回合
+- **点枪**（80速）：造成普通攻击伤害；闪避成功后，点枪必中
+
+---
+
+## 20-30 经验（生命值增加1d10+体质/5）
+
+### 属性路线选择
+
+| 路线 | 效果 | 圆满后效果 |
+|------|------|-----------|
+| 岳氏火书 | 伤害转为火属性+5点 | 拳：爆炸伤害溅射2人；枪：3回合每回合1d2灼热（最多5层）|
+| 岳氏金铁经 | 伤害转为金属性+2点，护甲魔抗+1 | 拳：可背击暗杀脖子（无护甲）；枪：获得5点护甲穿透 |
+
+### 拳系技能（4选2）
+
+- **蓄力拳**（50速）：蓄力一回合，下次攻击造成四倍伤害
+- **震·立·炮·破·绝！**（50速）：五连击递增，1d8→2d8→…→5d8，全中后额外25点固定伤害（中断则重算）
+- **钢筋铁骨**（100速）：免疫控制技能，受到伤害减少50%，持续时间内受到dot伤害
+- **你过来啊！**（80速）：嘲讽一名敌人
+
+### 枪系技能（4选2）
+
+- **挑枪**（100速）：造成普通攻击伤害，对方浮空
+- **追风刺**（50速）：四次普通攻击，对方浮空则必中且多两次
+- **横扫千军**（60速）：对至多三名敌方造成普通攻击伤害并倒地
+- **泰山压顶**（60速）：跃起用枪砸向对方，普通攻击+体型/3；对方倒地则伤害翻倍
+
+---
+
+## 30-40 经验（根据属性自动升级）
+
+| 路线 | 效果 | 拳圆满 | 枪圆满 |
+|------|------|--------|--------|
+| 火武随记 | 伤害+5，获得火焰抗性 | 一次攻击两名敌人 | 成功命中降低2点敌方护甲 |
+| 蛮氏锻铁记 | 伤害+7，护甲魔抗+2 | 可缴械而非反击 | 无视敌方护甲；可再选一个技能 |
+
+### 特性（四选一）
+
+- **铜头铁骨**：护甲+6，魔抗+4
+- **大力神通**：穿戴重甲时无负面效果
+- **金目明心**：每次战斗可抵挡一次针对灵魂的攻击
+- **诸武精通**：可使用任意类型武器，成功率均为60%
+
+---
+
+## 40-50 经验（生命值增加1d10+体质/5）
+
+### 拳系技能（3选2）
+
+- **葵花点穴手**（60速）：普通攻击命中时，选择以下之一：定身、截脉、断命（每回合每角色只能生效一个）
+- **大日九雷拳**（60速）：4次雷+4次火普通攻击，30%概率眩晕，30%概率灼热5回合（每回合1d2）
+- **磐岩金刚掌**（60速）：强制嘲讽一名敌人，敌方命中后对其造成5次普通攻击伤害，必定眩晕一回合
+
+### 枪系技能（3选2）
+
+- **风火穿心脚**（80速）：挺枪+飞脚，普通攻击+1d8，沉默一回合
+- **怒龙穿心**（60速）：五段普通攻击+1d8火，每段50%暴击
+- **伏龙潜涛**（80速）：防御反击，对方攻击命中则横扫至多5名敌人，三次50%双倍普通攻击
+
+---
+
+## 50-60 经验（生命值增加1d10）
+
+### 大招
+
+**拳系：吊睛伏虎穿心破！**
+25点固定伤害+四次普通攻击，10%秒杀；对方浮空则普通攻击暴击。
+
+**枪系：九千连镇火尖枪！**
+20点固定伤害+两次普通攻击，至多对五名敌人释放；对方倒地则普通攻击必定暴击。
+
+---
+
+## 60-70 经验（生命值增加1d10）
+
+### 特性（四选一）
+
+- **拳师**：拳法已达大师级别，基础伤害+8
+- **枪王**：枪法已达大师级别，基础伤害+6
+- **墨玉手**：基础伤害+2，手百毒不侵水火不侵
+- **衔阳枪**：人枪合一，持任何棍棒类物品均可发挥长枪威力，命中时对方失明一回合，基础伤害+4`
+  },
+  {
+    id: 'mo',
+    title: '墨家',
+    icon: '🤖',
+    category: '九大家族',
+    tag: '家族',
+    desc: '机关器械大宗，槽位系统，魁人与高达机甲。',
+    content: `## 墨家概述
+
+墨家为玖镇三大主要家族之一，以**机关器械**见长，体系体现于随身携带物品数量。
+
+**槽位成长**：基础15槽位。大成功+5槽位，极难3+1d2，困难2+1d3，普通1+1d4，失败+1
+
+---
+
+## 普通物品
+
+| 物品 | 槽位 | 说明 |
+|------|------|------|
+| 等离子切割刀 | 1 | 伤害1d5+1d3 |
+| 单人飞行器 | 3 | 如其名 |
+| 手雷 | 1 | 伤害2d10 |
+| 无线通讯器 | 2 | 无手机信号时沟通 |
+| 简易呼吸器 | 2 | 视为氧气管 |
+| 高等合金小刀 | 3 | 伤害2d8 |
+| 外骨骼紧身衣 | 8 | 某两个属性+10 |
+| 防身激光手枪 | 4 | 单发5点伤害，幸运×100%概率双倍，20发弹匣，不会损坏 |
+| 抓钩 | 3 | 如其名 |
+| 生命探测仪 | 5 | 探测范围50米 |
+| 佛怒唐莲 | 1 | 50点无法闪避固定物理伤害，仅可携带一个 |
+| 能量屏障 | 2 | 20点一次性护盾 |
+| 禁锢陷阱 | 3 | 踩到敌人被20点禁锢 |
+| 探测陷阱 | 3 | 持续探测周围50米 |
+| 爆炸陷阱 | 3 | 4d10 |
+| 臂装弹射器 | 5 | 装入小型手雷，手雷必中，战斗中发射后需次要行动装填 |
+| 震慑信标 | 5 | 敌方每次攻击有30%判定降低一个成功等级，使用四次后报废 |
+| 加速信标 | 5 | 己方敏捷闪避+5，多放效果叠加 |
+| 自动炮塔 | 10 | 自动警戒，伤害1d10，每次三发，无法操控，血量1 |
+| 电磁脉冲手枪 | 3 | 单发1d8+2 |
+| 特斯拉力场护盾 | 3 | 10点生命，不可恢复，战后可修理，保护全队 |
+| 黑眼摄像头 | 1 | 侦查 |
+| 遥控小车 | 1 | 侦查 |
+
+**特种手雷**（每个3槽位）：可包含直伤（1d10）、火伤（1d5+五回合烧伤1）、EMP（瘫痪电子设备）、雷电（1d5+50%麻痹/击晕/短路）中任一或两种属性。
+
+**特种信标**（每个5槽位）：
+- 雷电信标：对接近敌人造成伤害和麻痹，10次
+- EMP信标：瘫痪范围内电子设备，持续1小时
+- 治疗信标：自动治疗范围内友方，3次，1d5
+- 治疗机器人（10槽位）：消耗1小时恢复1d10
+
+---
+
+## 枪械类物品
+
+> 每五发子弹视为一个槽位
+
+| 武器 | 槽位 | 单伤 | 特效 |
+|------|------|------|------|
+| 等离子电磁狙击枪 | 10 | 20 | 幸运×100%概率爆头双倍，5发+5备弹 |
+| 脉冲步枪 | 8 | 1d10 | 可三连发，3弹匣30备弹 |
+| 荆棘（手枪） | 6 | 2d8 | 命中造成三回合2d2毒伤，3弹匣8备弹 |
+| 流明（手枪） | 6 | 2d6 | 命中恢复自己或队友1d5生命，3弹匣8备弹 |
+| 玫瑰（手枪） | 5 | 1d6+1d4 | 20%概率双倍伤害 |
+| AWM（静默弹药）| 12 | 2d15 | 命中造成失明一回合，3弹匣5备弹 |
+| 等离子能量炮指示器 | 50 | 秒杀 | 仅墨家内部制作，仅可使用一次，直径一米秒杀 |
+| 晋景公榴弹发射器 | 12 | 1d15 | 单发装填，可发射药水弹药 |
+| A137追踪导弹 | 25 | 1d30+4d10爆炸 | 单发装填，追踪效果 |
+
+---
+
+## 魁人系统
+
+魁人不占槽位，初始可携带一名魁人，拥有初始5槽位+1插件槽。
+
+**升级**：大成功+3槽+1插件，极难+2槽+1插件，困难+1槽或+1插件，普通+1槽
+
+**魁人属性**：力量、敏捷、体质共200点，护甲默认5，生命值20，移动力同主人
+
+**魁人基础战斗**：近战/远程/投掷三选一，斗殴初始60，闪避基础值，基础伤害2d6
+
+### 魁人插件
+
+| 插件 | 效果 |
+|------|------|
+| 属性插件 | 选一属性+20 |
+| 技能插件 | 获得一个50的技能 |
+| 战斗能力拓展 | 获得一种新战斗能力 |
+| 火焰附魔 | 攻击附带1d8火焰伤害 |
+| 雷电附魔 | 攻击附带1d8电流伤害 |
+| 自动瞄准 | 魁人攻击无法闪避 |
+| 飞行插件 | 魁人可飞行，移动+10 |
+| 特种护甲 | 护甲+10 |
+| 机械嘲讽 | 必须先攻击具有嘲讽的魁人 |
+| 外表自定义 | 自定义魁人外貌 |
+| 网络插件 | 魁人可联网 |
+| 远程通讯 | 距离10公里以上可命令魁人 |
+| 槽位插件 | 槽位+3 |
+
+---
+
+## 高达系统（均为40槽位）
+
+### 开天
+手持巨斧的机甲，护甲10，魔抗10，血量150，能量100
+
+- **普通攻击**：20+4d10物理伤害
+- **万金开山裂**：横扫+纵斩，至多三个地面单位倒地，1d40+力量/2伤害（20能量）
+- **断江**：斧劈大地+上撩，击飞+5d10伤害（20能量）
+- **撼岳**：跳起劈斧，1d100物理伤害（20能量）
+- **濯尘**：低空横扫，3d10物理伤害+倒地（20能量）
+- **归墟**：按顺序使用断江→撼岳→濯尘后可用，最大生命值-1真实伤害（0能量）
+
+### 御极
+手持阵旗的机甲，护甲20，魔抗40，血量150，能量100
+
+- **普通攻击**：3d10物理伤害+附加阵法效果
+- **万木回春复**：全体友方回春10+40点全抗护盾（20能量）
+- **定军令**：全体获得控制抵抗一回合，下一次攻击附带10%魅力真实伤害（20能量）
+- **镇岳曲**：全体获得一次免伤+10点全抗护盾（20能量）
+- **御极策**：全体（除自己）进入潜伏状态，下一次攻击双倍且同时攻击，机甲冷却两回合（20能量）
+
+### 沧溟
+手持能量炮的机甲，护甲20，魔抗20，血量150，能量100
+
+- **普通攻击**：25点固定物理伤害
+- **万浪击石破**：范围扫射，对所有敌人10物理+10法术（10能量）
+- **截江锁流**：能量炮插地，每个近身攻击的敌人受2d10伤害并打断攻击（30能量）
+- **沧澜囚阵**：插入能量矩阵，囚阵50生命，敌方未打破时无法攻击，每回合消耗5能量；碎裂后需一回合冷却
+- **洪涛定澜**：能量长枪丢出扎在敌方，敌方2回合无法行动且受到伤害增加30%（20能量）
+
+### 穹苍
+飞行机甲，护甲40，魔抗20，血量150，能量100
+
+- **普通攻击**：俯冲攻击，10+2d10物理伤害
+- **万炎灼魂爆**：俯冲+火焰炸弹，10物理+五回合每回合5火焰（15能量）
+- **炎羽破空**：俯冲火焰攻击，20+1d20火焰+3回合每回合1d5火焰（20能量）
+- **赤霄焚天**：火焰领域，友方攻击+1d5火焰，敌方每回合1d5火焰（每回合消耗10能量）
+- **烬翼镇穹**：火焰双翼俯冲，对全体敌方20火焰伤害+5回合每回合1d10灼烧（20能量）
+
+### 镇玄
+手持塔盾的机甲，护甲40，魔抗40，血量150，能量100；盾牌具有护甲50，魔抗30
+
+- **普通攻击**：盾击，1d10物理伤害
+- **万岩盘山固**：获得100点全抗护盾（20能量），碎裂后需一回合冷却
+- **撼岳嘲天**：嘲讽全体敌方，获得30点全抗护盾，免疫远程攻击，每回合消耗8能量
+- **磐石立阵**：生成能量障壁包裹所有人，100点血，每回合消耗5能量；碎裂后需一回合冷却
+- **厚土承罡**：每回合消耗20能量，站在地面上每回合恢复100点生命`
+  },
+  {
+    id: 'lin',
+    title: '林家',
+    icon: '🌬️',
+    category: '九大家族',
+    tag: '家族',
+    desc: '风水阵法一脉，蒙天法与遣龙诀，战士法师双路线。',
+    content: `## 林家概述
+
+林家为玖镇六个小家族之一，以**风水阵法**为核心，走蒙天法路线。
+
+**道力成长**：大成功10，极难7+1d3，困难5+1d5，普通1+1d9，失败+2
+
+**符数成长**：大成功5，极难3+1d2，困难1+1d4，普通1+1d2，失败0
+
+---
+
+## 0-10 道力
+
+### 通用技能
+
+- **掌心雷**（术法 50速）：1d8+1 雷伤，消耗3法力值
+- **风符/火符/水符/土符**（符法 50速）：参见通用符法体系
+
+### 特性
+
+- **符法精通**：所有符法速度+10
+- **风水学正统**：道力天生多5点（不计入升级道力）
+
+---
+
+## 10-20 道力
+
+### 技能
+
+- **通用雷法**（符法 60速）：基础值4+1d(道力)，10%×道力概率麻痹（最高60%）
+- **通用传送**（0速）：传送可物理进出区域
+- **通用追踪**（0速）：根据线索追踪
+- **蒙天阵**（30速）：每回合消耗3法力，阵内己方成功率+5，敌方-5
+- **蒙天法（简略）**（30速）：消耗5法力，三选一：让一个敌方无法闪避/让一个己方完全闪避下一次攻击/让己方全员逃脱
+
+### 特性
+
+- **蒙天法卷轴制作**：可制作简略蒙天法卷轴，使用后完全闪避一次攻击，每人仅限携带一件
+- **风水师的眷顾**：每次战斗有且仅有一次让任意行动成功等级+1
+
+---
+
+## 20-35 道力
+
+### 通用（战法共享）
+
+**调水命天术**：需半天准备，使用后进入假死状态，获得与本身道力等量的"势"（最高25点），持续12小时。"势"可自由增减己方与敌方骰子点数，此时生命视为1，法力视为0。12小时后灵魂死亡。范围：使用者周围百米。
+
+### 战士分支：遣龙诀（30速）
+
+需三回合准备，在三小时内调取龙脉增强自身，本人数据被龙脉数据代替。
+
+| 龙脉类型 | 效果 |
+|----------|------|
+| 干龙 | 生命翻倍，护盾=道力/2，每次攻击2d8+道力/3 |
+| 支龙 | 生命翻倍，无护盾，每次攻击2d8 |
+| 真龙 | 生命翻倍，护盾=道力，每次攻击1d8+道力 |
+| 假龙 | 护盾=道力，每次攻击普通攻击+2d8 |
+| 飞龙 | 生命翻倍，每回合多一次主要行动，攻击1d8+道力/3，所有技能速度+20 |
+| 潜龙 | 生命翻倍，护盾=道力，敌方攻击护盾时反弹所有伤害 |
+| 闪龙 | 生命翻倍，每回合多一次次要行动，攻击1d8+道力/3，所有技能速度+10 |
+
+### 法师分支（四选二）
+
+- **烟雨阵**（30速）：每回合消耗5法力，对方命中率降低三分之一（命中后判定，无法抵抗必中和范围技能）
+- **伏龙阵**（30速）：消耗8法力，一次性引动龙脉，己方所有属性+20，所有技能+20（不超95），持续一回合，一次战斗仅可使用一次
+- **移山阵**（30速）：大型阵法，战斗中不可使用，对一公里见方地形进行改造，需2小时构建，使用后消耗所有法力
+- **入界阵**（0速）：创造百平米小型空间，需一天构建，每天需界石稳定，可在任何地点随意出入（战斗外）
+
+---
+
+## 35-50 道力
+
+### 通用阵法
+
+- **五行阵**（20速）：提前布阵，镇压五行中人或物（最高平级）
+- **七星阵**（20速）：需剑，两回合准备，每回合10点物理伤害至全体
+
+### 特性
+
+- **蒙天法制作者**：可制作完美的蒙天法卷轴，使用者可获得持续30分钟的蒙天法效果（逃脱、潜行、易容）
+- 战斗中每回合消耗8法力值，非战斗每小时消耗4法力值
+
+### 本家技能（5选3）
+
+- **控鹤擒龙**（80速）：体术，造成普通攻击伤害，对方倒地或浮空
+- **沉风**（50速）：消耗10法力，改变区域质量产生更强重力，造成1d8伤害；对方浮空则2d8+d(体型/2)，并使对方倒地
+- **喷岩**（50速）：消耗10法力，地底岩石冲出，造成2d6；对方倒地则4d6+d(体质/2)并使对方浮空
+- **推窗望月**（60速）：体术，防御反击，对方攻击后造成2d8伤害并丢出去，击中其他敌方同样2d8并倒地
+- **萤火阵**：每回合消耗5法力，需一回合准备，第二回合发动，对方每回合30%判定，成功则失明一回合
+
+### 特性（八选二）
+
+- **体术小成**：每次战斗有且仅有一次让体术必中
+- **阵法小成**：每次战斗有且仅有一次阵法无需准备
+- **听凭符引**：符法成功等级+1
+- **术剑精通**：术法可以剑为媒介发动
+- **掣旗令阵**：阵法发动后不再持续消耗（需携带阵旗）
+- **掌中星辰**：每使用一次术法，下一次术法增加1d8星辰伤害
+- **神龙锻体**：每次使用遣龙诀获得10点护盾
+- **法阵护体**：每次使用法阵获得5点护盾（可叠加）
+
+---
+
+## 50-65 道力（技能5选2）
+
+- **掣金**（20速）：消耗8法力值，召唤七星剑，伤害7d4
+- **逢春**（30速）：消耗5法力值，给一名角色附上回春3的buff
+- **叠浪阵**（30速）：消耗5法力值，一回合发动，每回合1法力，造成5点群体伤害并给敌方创造水泽地形
+- **风引阵**（20速）：每回合消耗5法力，己方所有技能速度+20或-20，两回合准备，第三回合发动
+- **岩脊**（0速）：消耗3法力值，根据角色意愿改变地形
+
+---
+
+## 65-80 道力（四选一）
+
+| 道路 | 效果 |
+|------|------|
+| 阵 | 阵法不再需要时间准备 |
+| 符 | 符法不再需要画符准备，每张符法消耗5法力值 |
+| 术 | 术法不再受上限限制，可叠加各种特殊效果 |
+| 剑 | 剑法出神入化，每次攻击可带两道符或术法 |
+
+---
+
+## 80-90 道力（特性三选一）
+
+| 特性 | 效果 |
+|------|------|
+| 风来 | 可自行决定用什么龙脉加强自身 |
+| 水去 | 场上有你的阵法存在时，对方无法近身你 |
+| 本命天符 | 可制作本命天符，抵挡一次致死攻击，不可重新制作 |`
+  },
+  {
+    id: 'yi',
+    title: '易家',
+    icon: '⚡',
+    category: '九大家族',
+    tag: '家族',
+    desc: '占卜铜钱异术，铜钱或术阵分支，天谴与金钱道法。',
+    content: `## 易家概述
+
+易家为玖镇六小家族之一，以**占卜、铜钱、术阵**三道为核心。
+
+**道力成长**：大成功10，极难7+1d3，困难5+1d5，普通1+1d9，失败+2
+
+**符数成长**：大成功5，极难3+1d2，困难1+1d4，普通1+1d2，失败0
+
+---
+
+## 0-10 道力
+
+### 通用技能
+
+- **掌心雷**（术法 50速）：1d8+1 雷伤，3法力值
+- **风符/火符/水符/土符**（50速）：参见通用符法体系
+
+### 特性
+
+- **危险感知**：闪避等级+1
+- **占卜正统**：每日可进行一次占卜，KP根据情况确认是或否
+
+---
+
+## 10-20 道力
+
+### 技能
+
+- **知天**（本家术法）：战斗开始时使用，退出战场，获得对方所有信息及队友闪避和反击等级+1，无消耗。退出战场视为虚弱（属性及技能成功率-10，四小时恢复）
+- **乱天**（本家术法）：每消耗5法力值，让队友或自己增加一次奖励骰，或消除一次惩罚骰
+- **通用雷法**（60速）、**通用传送**（0速）、**通用追踪**（0速）
+
+### 特性
+
+- **铜钱鉴定**：可通过铜钱鉴定古代物件真伪，成功率50
+
+---
+
+## 20-35 道力（选择分支）
+
+### 铜钱分支（初始三枚，一张票券3枚）
+
+**特性**：
+- **聚宝盆**：拥有外置空间存放古币
+- **五帝钱制作者**：消耗5枚古币制作五帝钱，可完全抵挡一次伤害（天谴无法抵挡），上限1
+
+**技能**：
+- **金钱镖**（80速）：消耗5法力值+1古币，必中，造成1d8+5伤害
+- **金钱拳**：消耗2古币+5法力值，持续三回合，普通攻击增加1d10伤害
+
+### 术阵分支
+
+**特性**：
+- **通天者**：经常与老天沟通，可预知自身情况，不会生病
+- **窃天者**：每次攻击有10%概率出现天谴，天谴有50%击中自己/50%击中对方，造成5d9伤害
+
+**技能**：
+- **掣旗**（本家术法）：可挥舞大型阵旗作为武器，将阵法附着其上，每次攻击触发法阵效果。将阵法附着在阵旗上每次消耗5法力值
+- **请天问地**（本家阵法）：不需要准备，每回合消耗8法力值，以天的意志压迫敌方，敌方每回合进行灵魂鉴定，未通过则造成2d8无法闪避减免的真实伤害
+
+---
+
+## 35-50 道力
+
+### 通用阵法
+
+- **五行阵**（20速）、**七星阵**（20速）：同通用
+
+### 本家技能（5选3）
+
+- **金钱阵**（本家阵法 20速）：每回合消耗2枚古币+2法力值，对方全体仅可反击，无法闪避
+- **御天雷**（本家术法 50速）：将算卦引来的天谴打向敌方，对敌方造成最大生命值50%的伤害，对自己造成3点伤害，消耗6法力
+- **算天阵**（本家阵法 20速）：每回合消耗8法力值，己方除AOE伤害外必定闪避伤害
+- **拂尘**（本家术法 60速）：使用拂尘释放，造成最大道力值+5的伤害，必中，休息三回合（视为濒死），视为魔法伤害
+- **问天**（本家术法 80速）：消耗3法力，得知一名敌方的信息
+
+### 特性（八选二）
+
+- **以命知天**：消耗5生命值，获得更准确的卦象结果
+- **短时预测**：与你战斗的人成功等级-1
+- **听凭符引**：符法成功等级+1
+- **术剑精通**：术法可以剑为媒介发动
+- **掣旗令阵**：阵法发动后不再持续消耗
+- **掌中星辰**：每使用一次术法，下一次术法增加1d8星辰伤害
+- **金钱甲**：消耗一枚古币获得护甲10魔抗10耐久10的护甲
+- **明知故做**：在任一行动后，补充一次预备动作：闪避/防御/反击/逃跑
+- **钱乃万古道存**：每有一枚古币，古币相关技能伤害+1；每枚古币可在生命归零前作为临时生命值消耗
+- **旗令苍天**：阵旗可选择多消耗法力对敌方造成多次伤害
+
+---
+
+## 50-65 道力（技能5选2）
+
+- **掣金**（20速）：消耗8法力值，召唤七星剑，伤害7d4
+- **逢春**（30速）：消耗5法力值，给一名角色附上回春3的buff
+- **叠浪阵**（30速）：消耗5法力，一回合发动，每回合1法力，5点群体伤害并给敌方创造水泽地形
+- **风雷七星阵**（20速）：需七星剑，每回合消耗10法力，一回合准备，每回合对对方造成两次不可闪避的雷法伤害
+- **岩脊**（0速）：消耗3法力值，根据角色意愿改变地形
+
+---
+
+## 65-80 道力（四选一）
+
+| 道路 | 效果 |
+|------|------|
+| 阵 | 阵法不再需要时间准备 |
+| 符 | 符法不再需要画符准备，每张符法消耗5法力值 |
+| 术 | 术法不再受上限限制 |
+| 剑 | 每次攻击可带两道符或术法 |
+
+---
+
+## 80-90 道力（特性五选二）
+
+| 特性 | 效果 |
+|------|------|
+| 金钱师 | 古币在非战斗时不会低于10枚 |
+| 阵旗师 | 给阵旗上阵不再有消耗 |
+| 求天 | 消耗3枚古币可将天谴转给任何人，也可消耗3枚必定触发天谴 |
+| 令天 | 持有阵旗时，每个阵都会抵挡一次致命伤害 |
+| 本命天符 | 可制作本命天符，抵挡一次致死攻击，不可重新制作 |`
+  },
+  {
+    id: 'qi',
+    title: '亓家',
+    icon: '👻',
+    category: '九大家族',
+    tag: '家族',
+    desc: '鬼道符法传人，小鬼契约体系，炼鬼与术阵双路线。',
+    content: `## 亓家概述
+
+亓家为玖镇六小家族之一，以**鬼道**为核心，拥有与小鬼签订契约的特殊能力。
+
+**道力成长**：大成功10，极难7+1d3，困难5+1d5，普通1+1d9，失败+2
+
+**符数成长**：大成功5，极难3+1d2，困难1+1d4，普通1+1d2，失败0
+
+---
+
+## 0-10 道力
+
+### 通用技能
+
+- **掌心雷**（术法 50速）：1d8+1 雷伤，3法力值
+- **风符/火符/水符/土符**（50速）：参见通用符法体系
+
+### 特性
+
+- **鬼道传人**：拥有与小鬼签订契约的能力，包括平等契约或不平等契约
+- **异道出身**：每次道力成长时，道力+1
+
+---
+
+## 10-20 道力
+
+### 技能
+
+- **镇鬼符**（本家符法 80速）：让一个亡灵生物无法移动（可被反击），无攻击力
+- **炼狱火**（本家术法 50速）：火符升级版，对亡灵伤害翻倍；对非亡灵造成每回合2点灼烧+2点灵魂伤害（持续至战斗结束），消耗8法力值
+- **通用雷法**（60速）、**通用传送**（0速）、**通用追踪**（0速）
+
+### 特性
+
+- **亡灵之友**：非生命生物不会优先选择你作为攻击对象
+
+---
+
+## 20-35 道力（选择分支）
+
+### 术阵分支
+
+- **鬼视**（0速）：消耗5法力值，获得亡灵视野，可查看特殊事物
+- **鬼冥**（50速）：消耗10法力值，将小鬼属性/4和所有技能暂时加在自身
+- **鬼爆**（50速）：消耗12法力值，3d10爆炸伤害，附加一回合寒冷
+- **鬼灭阵**（10速）：每回合消耗7法力值，需一回合准备，阵中敌方失明，每回合1d5真实伤害
+
+### 炼鬼分支
+
+- **操鬼**（80速）：消耗5法力值，让小鬼本回合多一个主/次要行动
+- **震鬼**（80速）：消耗10法力值，让小鬼立即做出80速行动
+- **护鬼**（80速）：消耗6法力值，让小鬼替你阻挡一次攻击
+- **令鬼**（80速）：消耗8法力值，令小鬼下一次行动造成2倍效果
+
+### 特性（四选二）
+
+- **幽冥人**：受到物理伤害有15%概率无效
+- **鬼衣**：使用本家术法时获得4点护盾
+- **丁巳灵火**：炼制小鬼时50%概率增加某属性20、某技能10
+- **鬼医**：战后治疗小鬼，每次恢复1d10生命，耗半小时，可重复
+
+---
+
+## 35-50 道力
+
+### 通用阵法
+
+- **五行阵**（20速）、**七星阵**（20速）：同通用
+
+### 本家技能（5选3）
+
+- **幽冥火**（50速）：火法，对有生命生物造成双倍伤害，附着阴燃，消耗5法力值
+- **炼鬼阵**：每回合消耗4法力值，小鬼在阵中造成双倍伤害，敌方每回合判定体质，失败则寒冷
+- **自爆**（50速）：同归于尽，造成20d20伤害，50米
+- **鬼身**（30速）：消耗8法力值，持续两回合，敌方攻击有40%概率不命中
+- **清心符**（30速）：恢复3点灵魂力，解除眩晕、昏迷、疯狂
+
+### 特性（八选二）
+
+- **炼鬼大师**：小鬼属性天生+5
+- **训鬼大师**：小鬼技能天生+10
+- **听凭符引**：符法成功等级+1
+- **术剑精通**：术法可以剑为媒介发动
+- **掣旗令阵**：阵法发动后不再持续消耗
+- **掌中星辰**：每使用一次术法，下一次术法增加1d8星辰伤害
+- **护身鬼**：所有小鬼优先帮你承受伤害，小鬼闪避必定不低于50
+- **幽冥树**：在幽冥树周围修炼成功等级+1（仅限亓家子弟）
+
+---
+
+## 50-65 道力（技能5选2）
+
+- **鬼镰**（20速）：消耗8法力值，召唤镰刀，伤害4d8
+- **月引**（30速）：消耗5法力值，给一名小鬼附上回春3的buff
+- **梦中此月明！**（30速）：消耗15法力值，一回合发动，成功则对敌方所有人造成昏睡效果及2d10真实伤害
+- **鬼火**（60速）：给小鬼攻击增加一次火法伤害，附着阴燃buff
+- **鬼神**（50速）：消耗一半法力值，己方小鬼属性技能全部翻倍，造成三倍伤害
+
+---
+
+## 65-80 道力（四选一）
+
+| 道路 | 效果 |
+|------|------|
+| 阵 | 阵法不再需要时间准备 |
+| 符 | 符法不再需要画符准备，每张符法消耗5法力值 |
+| 术 | 术法不再受上限限制，可叠加各种特殊效果 |
+| 剑 | 剑法出神入化，每次攻击可带两道符或术法 |
+
+---
+
+## 80-90 道力（特性五选二）
+
+| 特性 | 效果 |
+|------|------|
+| 鬼师 | 小鬼不再有数量上限 |
+| 鬼人 | 属性如同小鬼，增强小鬼的法术可用于自身 |
+| 火法大师 | 火法视为必定成功，不会失败 |
+| 雷法大师 | 雷法视为必定成功，不会失败 |
+| 本命鬼符 | 可制作本命鬼符，抵挡一次致死攻击，同时给对方5点不可避免真实伤害 |`
+  },
+  {
+    id: 'wu',
+    title: '巫家',
+    icon: '🔮',
+    category: '九大家族',
+    tag: '家族',
+    desc: '附魔防护能力三系统，祭坛吊坠手镯道具系统。',
+    content: `## 巫家概述
+
+巫家为玖镇六小家族之一，以**巫术**为核心，分为**附魔系、防护系、能力系**三个系统。
+
+**等阶**：每10点为一个等级。
+
+**巫术成长**：大成功7，极难4+1d3，困难2+1d5，普通1d7，失败+2
+
+巫术的每一点等阶都可以自由加在技能属性上，在附魔系中每**两点**等阶可视为一点属性。
+
+---
+
+## 0-10 等阶（选择系统）
+
+选择**附魔系、防护系**或**能力系**
+
+### 通用技能
+
+- **一阶无属性附魔**（需祭坛）：使武器多一点无属性法术伤害
+- **一阶无属性护盾**（50速）：消耗3法力值，召唤一个2点生命的护盾（需吊坠）
+- **一阶无属性拳爆**（50速）：消耗5法力值，空手将巫术力量引爆，造成1d3+1d6伤害
+- **一阶御风**：漂浮在离地面三米高度，每小时消耗1法力值
+
+### 附魔系（均需祭坛）
+
+| 等级 | 效果 |
+|------|------|
+| 一阶火属性 | 武器获得3点额外火属性伤害 |
+| 一阶风属性 | 武器获得1点风属性伤害，持有者无视速度先攻 |
+| 一阶水属性 | 武器获得1点水属性伤害，持有者每回合获得1点护盾（不可叠加）|
+| 一阶金属性 | 武器增加4点金属性伤害，1点穿甲 |
+
+### 防护系（需吊坠）
+
+| 等级 | 效果 |
+|------|------|
+| 一阶水属性护盾 | 3点生命，护盾未被击破则下一回合回满，消耗3法力（50速）|
+| 一阶金属性护盾 | 4点生命，附带嘲讽效果，消耗3法力（50速）|
+| 一阶土属性护盾 | 5点生命，1点反伤，消耗3法力（50速）|
+| 一阶风属性护盾 | 1点生命，敏捷+10闪避+10，消耗3法力（50速）|
+
+### 能力系（可通过手镯提升效果）
+
+- **爆炎拳**（50速）：空手释放，2d6伤害，消耗5法力值
+- **踏风**：可纵跃到最高10米高度
+- **制酒**：可粗浅酿酒，恢复1d5生命和法力
+- **辟空**：拥有1立方米个人空间
+
+---
+
+## 10-20 等阶（特性四选二）
+
+- **附魔小成**：附魔效果增加3点
+- **防护小成**：护盾强度增加5点
+- **能力小成**：能力效果增加8点
+- **醉红尘品鉴师**：醉红尘（恢复1d20生命+满法力+奖励骰）的效果对你翻倍
+
+---
+
+## 20-30 等阶
+
+### 通用
+
+- **目明**：获得夜视效果，每小时消耗1法力值
+
+### 附魔系（均需祭坛）
+
+| 附魔 | 效果 |
+|------|------|
+| 重炎附魔 | 可与火属性叠加，击中后50%附加重炎效果，受到火属性伤害+50%持续一回合 |
+| 利风附魔 | 可与风属性叠加，击中时20%概率多造成一次攻击 |
+| 若水附魔 | 可与水属性叠加，击中时50%概率降低敌方敏捷10、闪避5持续两回合 |
+| 精金附魔 | 可与金属性叠加，武器外观更好更贵重，售价+50%，穿甲+4 |
+
+### 防护系（需吊坠）
+
+| 护盾 | 效果 |
+|------|------|
+| 流水盾 | 水盾升级，50%概率抵消50%受到的伤害 |
+| 坚金盾 | 金盾升级，敌方对坚金盾造成伤害变为70% |
+| 刺土盾 | 土盾升级，反伤效果可对至多三人同时造成伤害 |
+| 飓风盾 | 风盾升级，护盾消失，50%闪躲攻击，被打到一次护盾消失 |
+
+### 能力系（可通过手镯提升）
+
+- **刺风拳**（50速）：空手，4d6伤害，消耗5法力值，强力击退，敌人需一回合回来
+- **高阶御风**：可漂浮在踏风所达到的高度
+- **高阶制酒**：可制作普通醉红尘，每人上限1缸（8瓶），需3天
+- **瞬移**：可进行三米内的短距离瞬移
+
+---
+
+## 30-40 等阶（特性八选二）
+
+- **植物之友**：可识别各种植物
+- **春回大地**：每使用一个技能，给己方全体恢复1生命
+- **附魔大成**：附魔效果+6
+- **防护大成**：护盾强度+15
+- **能力大成**：每次战斗一次，击中对方时可使自己造成满额双倍伤害
+- **光合作用**：每天使用一次，恢复50%的MP与HP
+- **对他使用炎拳吧！**：造成的伤害增加1d8火伤
+- **血饮**：可通过吸食鲜血恢复自身状态，比例1:1
+
+---
+
+## 40-50 等阶
+
+### 附魔系（均需祭坛）
+
+| 附魔 | 效果 |
+|------|------|
+| 凌霄火附魔 | 覆盖重炎，可附在任意属性武器上，+5火属性伤害，命中附加凌霄火标记，五个标记时秒杀 |
+| 流云风附魔 | 覆盖利风，可附在任意属性武器上，+3风属性伤害，命中附加流云风标记，下次命中伤害翻倍 |
+| 芷箬水附魔 | 覆盖若水，可附在任意属性武器上，+3水属性伤害，附加芷箬水标记，雷火伤害攻击时消耗标记提升50%伤害 |
+| 剑锋金附魔 | 覆盖精金，可附在任意属性武器上，+7金属性伤害，造成的伤害增加50% |
+
+### 防护系（需吊坠）
+
+| 护盾 | 效果 |
+|------|------|
+| 叠浪盾 | 覆盖流水盾，+5护盾值，属性伤害减半，火属性伤害翻倍 |
+| 御铁盾 | 覆盖坚金盾，+7护盾值，免疫物理伤害 |
+| 盘岩盾 | 覆盖刺土盾，每次受攻击释放地震波对全体敌方2点伤害，20%概率眩晕一回合 |
+| 柔风盾 | 覆盖飓风盾，+3护盾值，角色获得柔风效果，每三回合获得一次奖励骰 |
+
+### 能力系（可通过手镯提升）
+
+- **弱水拳**（50速）：空手，6d6伤害，消耗10法力值，被击中敌人持续每回合受到5点伤害（不可抑制不可取消，战斗结束自动消失）
+- **探金掌**（50速）：空手，4d6伤害，消耗10法力值，被击中敌人进入流血状态（每回合1点），攻击流血状态敌人探金掌造成双倍伤害
+- **纵云**：可在千米低空飞行
+- **终极制酒**：可制作醉红尘仙酿，成功率30%
+- **巫法体术**：空手造成伤害增加50%，力量和敏捷+10`
+  },
+  {
+    id: 'shang',
+    title: '商法体系',
+    icon: '💰',
+    category: '特殊体系',
+    tag: '体系',
+    desc: '不具有战斗技能的特殊体系，专注于商业交涉与价值判断。',
+    content: `## 商法体系概述
+
+商法体系是一个特殊的体系，**不具有战斗技能**，而是天生拥有一些特性和特殊技能。
+
+---
+
+## 特性
+
+- **商人直觉**：任何物品在你眼中都会呈现本身价格
+- **讨价还价**：任何商品在你购入时都以8折售出
+- **精通交谈**：你的社交类技能固定为85点
+- **溢价售出**：你在卖出东西时，会获得多50%的价格
+
+---
+
+## 技能
+
+- **和谈**：消耗所有法力值，强迫在场的所有人停止其他一切动作，进入5分钟的和谈
+- **钱力**：消耗所有法力值，消耗一定数量的资金，让对方认同一件事情
+- **慧眼识珠**：消耗一半法力值，在一堆物品中挑选最有价值的东西
+- **历史学**：消耗一半法力值，得知一个物品的一部分信息
+
+---
+
+## 应用指南
+
+商法体系适合以下玩家：
+
+- 希望在战斗之外发挥关键作用的玩家
+- 擅长社交交涉的玩家
+- 希望在经济层面影响剧情走向的玩家
+
+商法体系与其他家族体系并不冲突，可以作为**副业**选择，但无法参与战斗时建议配备基本防身装备。`
+  },
+  {
+    id: 'herbs',
+    title: '草药学列表',
+    icon: '🌿',
+    category: '道具系统',
+    tag: '道具',
+    desc: '完整草药列表，药方配方，进阶虫类与炼制说明。',
+    content: `## 草药学体系
+
+**药家经验体系**：每20经验一级，成长为大成功10，极难7+1d3，困难5+1d5，普通1+1d9，失败+2
+
+**炼制时间**：低阶半小时，中阶1小时，高阶1小时
+
+**购买价格**：低阶草药1票券购3份，中阶1票券购2份，高阶1票券购1份。低阶药方/虫子2票券，中阶4票券，高阶6票券
+
+每次到达新等级时，获得该等级每份草药3份。
+
+---
+
+## 入门草药
+
+| 草药 | 效果 |
+|------|------|
+| 肉叶 | 直接食用2份+3HP，炼药可使药物属性+4HP |
+| 解离草 | 解毒药，必要三份才有解毒效果，可与更强解毒药配合 |
+| 红山 | 壮骨药，单一炼药使护甲+1，放三份可获得伤害+1 |
+| 谈碎叶 | 泻药，不可与其他药一起用 |
+| 绿火 | 毒药基药，多种毒药混合时加入可防止药性抵消，本身无效果 |
+| 入夜青宫 | 毒药，单一获得2+3×1d3效果，放三份获得6+3×4效果，同时自身炼药时获得3×3中毒，且30%概率失败 |
+| 随心株 | 致幻药，降低所有技能属性值10点，多放无额外效果 |
+| 清心 | 一份可解除异常效果，三份可解除强力异常效果 |
+| 油玉 | 硕大果实，极强饱腹感与能量，建议不超过一份 |
+| 玄果 | 黑色果实，加入药材获得夜视效果，三份可让自己全身发亮 |
+
+### 入门药方
+
+| 药方 | 材料 |
+|------|------|
+| 伤药 | 三份肉叶 |
+| 解毒药 | 三份解离草 |
+| 沸血丹 | 三份红山 |
+| 泻药 | 三份谈碎叶 |
+| 毒药 | 一份绿火+两份入夜青宫 |
+| 醒神汤 | 两份清心+一份油玉 |
+
+---
+
+## 入门进阶（蛊术）
+
+| 虫类 | 材料 | 速度 | 效果 |
+|------|------|------|------|
+| 小强草 | — | — | 使药效增加1倍 |
+| 灰燃草 | — | — | 一两份使药材增加一次5+1×4火毒；三份造成一次2d10火毒 |
+| 冰木 | — | — | 冰毒药，使对方无法行动一天；与火毒一起使用则火毒伤害翻倍 |
+| 烛火 | 肉叶、红山、入夜青宫 | 50速 | 5灼烧，需主要行动解除 |
+| 灵明 | 清心、玄果 | 70速 | 清除眩晕，灵魂恢复2，对敌方眩晕打断 |
+| 窥山 | 三份玄果 | 30速 | 与飞虫通感 |
+| 嗜钢 | 三份绿火 | 60速 | 可啃食钢铁，造成1d8物理伤害 |
+| 情忠 | 三份随心株 | 30速 | 命中使敌方爱上你或忠于你，让对方三次行动有惩罚骰 |
+| 饮月 | 三份油玉 | 30速 | 食用后提升自身所有技能成功率10点，持续3次 |
+
+---
+
+## 中阶草药
+
+| 草药 | 效果 |
+|------|------|
+| 星夜草 | 食用增加目力，获得5点闪避加成3回合；炼药加进去此属性 |
+| 火绮罗 | 增加解毒，属于更强力的解毒药，可同解离草一起用 |
+| 幽铃 | 配到药方里有感应鬼魂的能力，单食用无用 |
+| 断肠 | 单一造成5+永久1d5的效果，多方可叠加；三份炼制出现入夜青宫一样的副作用 |
+| 陆云叶 | 单一炼药获得物理护甲+2，三份同时放进去护甲+4、法抗+4 |
+| 随风 | 食用增加脚力，敏捷+5、闪避+5，放三份可叠加 |
+| 九叶红果 | 单一食用恢复3点HP，三份可叠加 |
+| 路莫明 | 致幻药，可让一个人直接陷入疯狂 |
+| 炸果 | 炼药时加入可让药丸受到冲击时炸裂 |
+| 意明 | 可解除疯狂状态，炼药里可恢复1灵魂值 |
+
+### 中阶药方
+
+| 药方 | 材料 |
+|------|------|
+| 明星丹 | 三份星夜草 |
+| 红云汤 | 三份火绮罗 |
+| 神龟丹 | 三份陆云叶 |
+| 断肠散 | 两份断肠+一份绿火 |
+| 金创药 | 三份九叶红果 |
+| 路不明 | 两份路莫明+一份意明（可让生物每时有一半几率陷入疯狂）|
+
+### 中阶进阶（蛊术）
+
+| 虫类 | 材料 | 速度 | 效果 |
+|------|------|------|------|
+| 风月叶 | — | — | 春药，可自由加在任何药方中，不具有空蓝效果 |
+| 红尘果 | — | — | 可加入任一药方，增加恢复1d5血量和蓝量 |
+| 三星白葵 | — | — | 强烈致幻药，加入药方后使食用者所有行为随机三回合 |
+| 驰木 | 炸果、意明 | 100速 | 必中，1d8伤害，具有极高初始速度，使敌方致盲3个行动 |
+| 风毒 | 断肠 | 30速 | 造成3毒伤，若敌方中毒则额外造成一次满额毒伤（延迟毒伤全部爆发）|
+| 酒神 | 路莫明、三星白葵、红尘果 | 30速 | 对敌方造成三回合惩罚骰并造成1d8伤害 |
+| 腐身 | 幽铃、断肠 | 50速 | 对敌方造成1d8腐蚀伤害，40%概率破坏对方防具 |
+| 断肠（虫）| 三份断肠 | 50速 | 对敌方造成1点毒伤，五回合后造成30点真实伤害 |
+| 解忧 | 九叶红果、红尘果 | 30速 | 恢复1d10的生命和蓝量，同时恢复3点灵魂 |
+
+---
+
+## 高阶草药
+
+| 草药 | 效果 |
+|------|------|
+| 破妄花 | 食用可解除精神系能力对自己的干扰，三份可叠加 |
+| 莫草 | 汁液有极强腐蚀性，不可与其他药材混用，三份叠加可制作腐蚀粉 |
+| 黄金叶 | 食用可增加机体韧性，不可与其他药材混用，三份叠加可制作金身丸 |
+| 翠枝 | 食用可恢复3点HP，三份叠加可制作回春散 |
+| 魔玉叶 | 食用可恢复一点法力值，三份叠加可制作复神散（恢复8点法力值）|
+| 迷踪 | 高级致幻药，需非常小心，致幻效果可根据炼药师有指向性，不会使人陷入疯狂 |
+| 刀木 | 坚硬木材，以其作为燃料烟熏药材制作时，药材统一呈粉末状 |
+| 七叶重楼 | 强力内伤药，治疗效果仅恢复1HP，但可直接解除濒死状态 |
+| 昊阳果 | 春药，若对方没有解除则对方空蓝，效用会被意明中和 |
+| 梦吟 | 蒙汗药，效用会被意明中和 |
+
+### 高阶药方
+
+| 药方 | 材料 |
+|------|------|
+| 破妄丹 | 三份破妄花 |
+| 腐蚀粉 | 三份莫草 |
+| 金身丸 | 三份黄金叶 |
+| 回春散 | 三份翠枝 |
+| 复神散 | 三份魔玉叶 |
+
+### 高阶进阶（蛊术）
+
+| 虫类 | 材料 | 速度 | 效果 |
+|------|------|------|------|
+| 日月绮罗 | — | — | 使效果增加5倍，炼药时80%概率自己陷入昏迷，使用时80%概率失去行动一回合 |
+| 龙涎 | — | — | 恢复1点永久灵魂，可加入任何药方 |
+| 路通通 | — | — | 强力泻药，食用后立即不可抵抗地喷射 |
+| 箭虫 | 刀木 | 50速 | 造成2d8物理伤害，可附带任何药物进攻 |
+| 幽梦 | 梦吟、迷踪 | 0速 | 命中则对敌方造成睡眠效果 |
+| 百足 | 魔玉叶、刀木 | 50速 | 体型硕大的虫子，命中对敌方造成束缚效果和2d8伤害 |
+| 命破 | 迷踪、日月绮罗、断肠 | 50速 | 极致毒虫，造成1+A×1d8毒伤（A无限），配合风毒时A=8 |
+| 鸡尾 | 七叶重楼、刀木、魔玉叶 | 50速 | 身体耐药性好，可携带至多3份药草攻击 |
+| 解炉 | 刀木、路通通、谈碎叶 | 60速 | 会爆炸的虫子，命中可选择脱离战场，造成3d10+5爆炸伤害 |
+
+---
+
+## 特殊草药与药方
+
+**特殊草药**：三月翠花、凤尾、指足虫、三叶明果、九转青藤、清白木
+
+| 特殊药方 | 材料 | 成功率 | 效果 |
+|----------|------|--------|------|
+| 回魂丹 | 一份龙涎+两份七叶重楼 | 50% | — |
+| 融火散 | 一份凤尾+两份莫草 | 70% | — |
+| 夺魂丹 | 一份指足虫+两份迷踪+炼药师的一撮头发 | 70% | — |
+| 丸剑 | 一份三叶明果+两份刀木 | 100% | — |
+| 招魂散 | 一份九转青藤+两份梦吟 | 70% | 灵魂值低于20时使用，灵魂值+20；若高于20，灵魂值-20 |
+| 忘红尘 | 三份红尘果 | 100% | — |`
+  },
+  {
+    id: 'traits',
+    title: '通常特性体系',
+    icon: '✨',
+    category: '道具系统',
+    tag: '特性',
+    desc: '通用特性与各家族特性完整列表。',
+    content: `## 通常特性体系
+
+通常特性是所有角色均可选择的特性，不受家族限制。
+
+---
+
+## 通用特性
+
+| 特性 | 效果 |
+|------|------|
+| 警觉 | 每次战斗有且仅有一次机会让你的闪避触发不需要消耗次要行动 |
+| 军队出身 | 你选择力量、敏捷、移动三者其中之一+10，你的移动力+10 |
+| 搜寻者 | 你对隐藏的一些东西具有更灵敏的感觉，你的搜寻判定增加一个奖励骰 |
+| 枪手 | 你的枪不会因为大失败而坏掉，同时你的连发射击将减少一个惩罚骰 |
+| 冲锋 | 每次战斗有且仅有一次机会让你的某个技能视为速攻技能且不消耗次要行动使用 |
+| 学者 | 你在修习某个派系或者某个技能时，在你成功的时候成功等级+1 |
+| 苦修者 | 你的体质+20，同时你可以获得麻痹、催眠、中毒、寒冷、灼热、晕眩其中之一的抗性 |
+| 剑客 | 你的近战武器伤害+2，同时你可以让你的次要行动变成主要行动但是多一个惩罚骰 |
+| 医师 | 你的治疗被视为固定最大值 |
+| 护甲应用 | 你穿戴各种装备不再受到属性限制（饰品除外）|
+| 珠宝大师 | 你穿戴各种饰品不再受到属性限制（装备除外）|
+| 吟游诗人 | 你的游说多一个奖励骰，且你修习了一门乐器的简单课程（30的某种乐器技能）|
+| 山行客 | 你的领航多一个奖励骰，特殊地形对你毫无影响 |
+| 幸运 | 好吧，你的幸运+20 |
+| 刺客 | 你的敏捷+10，你可以抛弃你的主要行动让它变成次要行动 |
+| 跑者 | 你的移动+10，当你和你的敌人没有垂直地形差，你永远可以跑过去揍他 |
+| 强身健体 | 你的护甲+4，魔抗+2 |
+| 凶蛮打手 | 你每回合有一次机会，在掷近战武器攻击的伤害骰时，重掷武器的伤害骰并选用新旧骰值二者之一 |
+| 哨兵 | 你将主动发现悄悄潜行在你四周的生物（除非他潜行大成功）|
+| 博学 | 你可以把30的兴趣点分配到自己的技能里 |
+| 夜行者 | 你的潜行技能增加一个奖励骰 |
+| 大胃王 | 你可以通过吃饭回满你的生命值 |
+| 枪斗术 | 如果你持枪和敌方抵近战斗，你可以多一个近战主要行动 |
+
+---
+
+## 张家特性
+
+### 入门特性
+
+| 特性 | 效果 |
+|------|------|
+| 雷法精通 | 你的雷法伤害增加5，且必定造成50%麻痹 |
+| 道法正统 | 你可以多携带两张符 |
+| 火法精通 | 你的火法伤害增加8，且必定造成2回合1点灼燃伤害 |
+
+### 初阶特性
+
+| 特性 | 效果 |
+|------|------|
+| 雷法大成 | 你的雷法成功则视为必中，无法闪避 |
+| 火法大成 | 你的火法造成的灼燃伤害可以选择不发动，然后在某一时刻造成突然伤害（打断）|
+| 听凭符引 | 你的符法发动成功等级+1 |
+| 术剑精通 | 你的术法可以用你的剑为媒介发动（同时造成剑伤和术法伤害）|
+| 掣旗令阵 | 你的阵法在发动之后便再不需要持续消耗（需要携带阵旗）|
+| 掌中星辰 | 你在战斗中每使用一次术法，你的下一次术法会增加1d8的星辰砸落物理伤害 |
+| 天雷护体 | 你每次使用雷法伤害就获得你伤害一半的护盾 |
+| 神火锻体 | 你每次使用火法伤害就获得你伤害一半+5的临时生命 |
+
+### 中阶特性
+
+| 特性 | 效果 |
+|------|------|
+| 阵 | 你的阵法不再需要时间准备 |
+| 符 | 你的符法不再需要画符准备，但每张符法5点法力值消耗 |
+| 术 | 你的术法不再受到上限限制，可以叠加各种特殊效果 |
+| 剑 | 你的剑法出神入化，每次攻击可以带两道符或者术法 |
+
+### 高阶特性
+
+| 特性 | 效果 |
+|------|------|
+| 天雷 | 你的雷如同你的臂膀，招手便来，挥手便去，不再有消耗 |
+| 地火 | 你的火如同你的臂膀，招手便来，挥手便去，不再有消耗 |
+| 火法大师 | 你的火法视为必定成功，不会失败 |
+| 雷法大师 | 你的雷法视为必定成功，不会失败 |
+| 本命天符 | 你可以制作本命天符，可以抵挡一次致死攻击，每人有且仅能有一张天符，且不能在天符消耗掉之后重新制作 |`
+  },
+  {
+    id: 'equipment',
+    title: '装备列表',
+    icon: '⚔️',
+    category: '道具系统',
+    tag: '装备',
+    desc: '道家装备池，胸甲、头盔、腿甲与饰品完整列表。',
+    content: `## 装备体系概述
+
+装备分为**印章、胸甲（轻甲/重甲）、头盔、腿甲**和**饰品**五大类。
+
+一个角色可以拥有**五个装备位**：一般头、胸、腿提供防御属性，饰品提供效果属性。
+
+---
+
+## 道家装备池（印章）
+
+### 大成功（最高级）
+
+- 万年寒玉印
+- 雷霆都司印
+- 灵宝大法司印
+- 红莲火印
+- 司辰挂印
+
+### 极难
+
+- 五雷斩勘印
+- 金光抖银印
+- 天挂水印
+- 斩妖缚邪印
+- 北极驱邪印
+- 紫府丹鼎印
+- 五岳真形印
+- 铁麟印
+- 阴阳八卦印
+
+### 困难
+
+- 九天玄女印
+- 幽冥印
+- 太乙救苦天尊印
+- 玉皇敕命印
+- 东极青华印
+- 南极长生印
+- 二十八宿印
+- 雷击木印
+- 摄召亡魂印
+- 禹步锁关印
+- 净明法主印
+
+### 普通
+
+- 桃木斩邪印
+- 青铜符咒印
+- 破损的红莲火印
+- 朱砂丹鼎印
+- 黑石镇煞印
+- 黄铜法事印
+- 灵竹清心印
+- 净水去秽印
+- 白石守一印
+- 松纹剑令印
+
+### 失败
+
+- 阴煞反噬印
+- 赤血催功印
+- 三枯三荣印
+- 折寿问天印
+- 五鬼搬运印
+
+### 大失败（负面）
+
+- 裂魂分神印
+- 朽木难支印
+- 饮鸩止渴印
+- 怨骨缠身印
+- 破瓦碎运印
+
+---
+
+## 胸甲
+
+### 轻甲
+
+| | | | |
+|--|--|--|--|
+| 飞云氅 | 蝉翼衫 | 流风袍 | 竹影甲 |
+| 燕翎铠 | 月华帔 | 霓裳羽衣 | 龙绡软甲 |
+| 步光铠 | 百草霜衣 | 纸鸢甲 | 松烟战袍 |
+| 镜花水月 | 柳叶绵甲 | 青萍履甲 | 蝶舞护心 |
+| 千蝉丝甲 | 浮光掠影 | 稥狐裘甲 | 无尘道衣 |
+
+### 重甲
+
+| | | | |
+|--|--|--|--|
+| 不动明王铠 | 玄武镇岳甲 | 龙鳞撼地铠 | 饕餮吞肩 |
+| 山岳担肩 | 朱雀焚城甲 | 麒麟踏云铠 | 刑天舞干戚 |
+| 夔牛震鼓铠 | 狴犴司狱甲 | 睚眦必报铠 | 赑屃负碑甲 |
+| 混沌玄甲 | 穷奇掠空铠 | 烛龙衔炎甲 | 白泽辟邪铠 |
+| 毕方雳天甲 | 重玄铁浮屠 | 陨星千钧甲 | 玄甲·苍云 |
+
+---
+
+## 头盔
+
+| | | | |
+|--|--|--|--|
+| 龙首兜鍪 | 凤翅盔 | 七星额子 | 朱雀冠 |
+| 白虎盔 | 玄武盔 | 麒麟盔 | 狻猊盔 |
+| 饕餮盔 | 穷奇盔 | 混沌盔 | 梼杌盔 |
+| 毕方盔 | 白泽盔 | 飞廉盔 | 刑天盔 |
+| 山文盔 | 镜面盔 | 笠铁盔 | 金瓯冠 |
+
+---
+
+## 腿甲
+
+| | | | |
+|--|--|--|--|
+| 岳峙胫甲 | 风行绑腿 | 玄武腿缚 | 登云靴甲 |
+| 混沌腿铠 | 石犀护腿 | 灵鹤胫甲 | 虎胫护膝 |
+| 磐石腿甲 | 追月胫甲 | 夔牛战靴 | 金乌飞羽 |
+| 蝉影护胫 | 贪狼腿铠 | 墨家机关胫 | 烛龙胫甲 |
+| 不动尊护膝 | 八卦阵图腿甲 | — | — |
+
+---
+
+## 饰品
+
+| | | |
+|--|--|--|
+| 同心环 | 相思红豆 | 步摇金钗 |
+| 君子玉块 | 玲珑骰子 | 安息香囊 |
+| 七宝璎珞 | 青铜纵目 | 朱雀翎 |
+| 玄武甲片 | 青龙逆鳞 | 白虎牙饰 |
+| 望舒簪 | 羲和璧 | — |`
+  }
+];
+
+let pages = [...DEFAULT_PAGES];
+let currentPage = 'home';
+let dataSha = null; // GitHub file SHA for updates
+
+// ===== GITHUB API =====
+async function ghFetch(path, options = {}) {
+  const headers = {
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    ...(ghToken ? { 'Authorization': 'Bearer ' + ghToken } : {}),
+    ...options.headers
+  };
+  const res = await fetch('https://api.github.com' + path, { ...options, headers });
+  return res;
+}
+
+async function loadConfig() {
+  try {
+    const res = await fetch('config.json?_=' + Date.now());
+    siteConfig = await res.json();
+  } catch(e) {
+    siteConfig = { site: { repo: '', branch: 'main' }, users: [], roles: {} };
+  }
+}
+
+async function loadPages() {
+  // Try GitHub API first (always fresh)
+  if (siteConfig && siteConfig.site.repo) {
+    try {
+      const repo = siteConfig.site.repo;
+      const branch = siteConfig.site.branch || 'main';
+      const res = await ghFetch(`/repos/${repo}/contents/${DATA_FILE}?ref=${branch}`);
+      if (res.ok) {
+        const data = await res.json();
+        dataSha = data.sha;
+        const decoded = JSON.parse(atob(data.content.replace(/\n/g, '')));
+        if (decoded && decoded.pages) {
+          pages = decoded.pages;
+          // cache locally
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pages, sha: dataSha })); } catch(e) {}
+          return;
+        }
+      }
+    } catch(e) { console.warn('GitHub load failed, using cache/defaults:', e); }
+  }
+  // Fallback: local cache
+  try {
+    const cached = localStorage.getItem(STORAGE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed.pages) { pages = parsed.pages; dataSha = parsed.sha || null; return; }
+    }
+  } catch(e) {}
+  // Final fallback: defaults (already set)
+}
+
+async function savePages() {
+  if (!ghToken || !userPerms.can_edit) {
+    showToast('⚠️ 无编辑权限');
+    return false;
+  }
+  const repo = siteConfig.site.repo;
+  const branch = siteConfig.site.branch || 'main';
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({ pages }, null, 2))));
+  const body = {
+    message: `✏️ 更新页面内容 [${currentUser.login}]`,
+    content,
+    branch,
+    ...(dataSha ? { sha: dataSha } : {})
+  };
+  const res = await ghFetch(`/repos/${repo}/contents/${DATA_FILE}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' }
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dataSha = data.content.sha;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pages, sha: dataSha })); } catch(e) {}
+    return true;
+  } else {
+    const err = await res.json();
+    console.error('Save error:', err);
+    showToast('❌ 保存失败：' + (err.message || '未知错误'));
+    return false;
+  }
+}
+
+// ===== AUTH =====
+async function loadToken() {
+  try { ghToken = localStorage.getItem(TOKEN_KEY); } catch(e) {}
+  if (ghToken) await verifyAndLoadUser(ghToken);
+}
+
+async function verifyAndLoadUser(token) {
+  const res = await fetch('https://api.github.com/user', {
+    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+  });
+  if (!res.ok) { ghToken = null; return false; }
+  currentUser = await res.json();
+  ghToken = token;
+  resolveRole();
+  updateAuthUI();
+  updateLockUI();
+  return true;
+}
+
+function resolveRole() {
+  if (!siteConfig || !currentUser) { userRole = null; userPerms = { can_edit: false, can_delete: false, can_create: false }; return; }
+  const userEntry = siteConfig.users.find(u => u.github_username.toLowerCase() === currentUser.login.toLowerCase());
+  if (!userEntry) { userRole = 'viewer'; }
+  else { userRole = userEntry.role; }
+  const roleDef = siteConfig.roles[userRole] || siteConfig.roles['viewer'];
+  userPerms = {
+    can_edit: roleDef.can_edit || false,
+    can_delete: roleDef.can_delete || false,
+    can_create: roleDef.can_create || false
+  };
+}
+
+function updateAuthUI() {
+  const loginBtn = document.getElementById('login-btn');
+  const userInfo = document.getElementById('user-info');
+  if (!currentUser) {
+    loginBtn.style.display = 'flex';
+    userInfo.style.display = 'none';
+  } else {
+    loginBtn.style.display = 'none';
+    userInfo.style.display = 'flex';
+    document.getElementById('user-avatar').src = currentUser.avatar_url;
+    document.getElementById('user-name').textContent = currentUser.login;
+    const roleDef = siteConfig && siteConfig.roles[userRole];
+    document.getElementById('role-badge').textContent = roleDef ? roleDef.label : '访客';
+  }
+  // Update sidebar footer
+  const sidebar = document.getElementById('auth-status-sidebar');
+  if (sidebar) {
+    if (!currentUser) {
+      sidebar.innerHTML = '<button onclick="openTokenModal()" style="width:100%;padding:9px;border-radius:4px;border:1px solid rgba(180,134,11,0.35);background:rgba(180,134,11,0.08);color:rgba(245,239,224,0.6);font-family:Noto Sans SC,sans-serif;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(180,134,11,0.18)';this.style.color='#d4a017'" onmouseout="this.style.background='rgba(180,134,11,0.08)';this.style.color='rgba(245,239,224,0.6)'">🔑 GitHub 登录以编辑</button>';
+    } else {
+      const canEdit = userPerms.can_edit;
+      sidebar.innerHTML = `<div style="font-size:11px;color:rgba(180,134,11,0.5);font-family:Noto Sans SC,sans-serif;text-align:center;padding:4px 0">已登录为 ${currentUser.login}</div>`;
+    }
+  }
+}
+
+function openTokenModal() {
+  document.getElementById('token-overlay').classList.add('show');
+  document.getElementById('token-input').value = '';
+  document.getElementById('token-error').textContent = '';
+  setTimeout(() => document.getElementById('token-input').focus(), 100);
+}
+
+function closeTokenModal() {
+  document.getElementById('token-overlay').classList.remove('show');
+}
+
+async function submitToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) { document.getElementById('token-error').textContent = '请输入 Token'; return; }
+  document.getElementById('token-submit').textContent = '验证中…';
+  document.getElementById('token-submit').disabled = true;
+  const ok = await verifyAndLoadUser(val);
+  document.getElementById('token-submit').textContent = '验证并登录';
+  document.getElementById('token-submit').disabled = false;
+  if (ok) {
+    try { localStorage.setItem(TOKEN_KEY, val); } catch(e) {}
+    closeTokenModal();
+    renderNav();
+    showToast(`✅ 欢迎，${currentUser.login}！${userPerms.can_edit ? '已获得编辑权限' : '（只读模式）'}`);
+  } else {
+    document.getElementById('token-error').textContent = 'Token 无效或权限不足，请重试';
+  }
+}
+
+function logout() {
+  ghToken = null;
+  currentUser = null;
+  userRole = null;
+  userPerms = { can_edit: false, can_delete: false, can_create: false };
+  try { localStorage.removeItem(TOKEN_KEY); } catch(e) {}
+  updateAuthUI();
+  updateLockUI();
+  renderNav();
+  showToast('已退出登录');
+}
+
+// ===== LOCK UI (now driven by auth) =====
+function updateLockUI() {
+  const newPageBtn = document.getElementById('new-page-btn');
+  const editBtn = document.getElementById('edit-btn');
+  const deleteBtn = document.getElementById('delete-btn');
+  if (!newPageBtn) return;
+
+  if (userPerms.can_create) newPageBtn.classList.add('show');
+  else newPageBtn.classList.remove('show');
+
+  if (userPerms.can_edit && currentPage) editBtn.classList.add('show');
+  else editBtn.classList.remove('show');
+
+  const isCustomPage = currentPage && currentPage.startsWith('page_');
+  if (userPerms.can_delete && isCustomPage) deleteBtn.classList.add('show');
+  else deleteBtn.classList.remove('show');
+}
+
+// ===== NAV =====
+function renderNav() {
+  const categories = {};
+  pages.forEach(p => {
+    if (!categories[p.category]) categories[p.category] = [];
+    categories[p.category].push(p);
+  });
+
+  const icons = {'总览':'🏮','核心规则':'📜','九大家族':'👥','特殊体系':'💼','道具系统':'🎒'};
+  let html = '';
+  for (const [cat, ps] of Object.entries(categories)) {
+    html += `<div class="sidebar-section">${icons[cat]||'📂'} ${cat}</div>`;
+    ps.forEach(p => {
+      html += `<div class="nav-item ${p.id===currentPage?'active':''}" onclick="navigate('${p.id}')" data-id="${p.id}">
+        <span class="nav-icon">${p.icon}</span>
+        <span>${p.title}</span>
+      </div>`;
+    });
+    html += '<div class="sidebar-divider"></div>';
+  }
+  document.getElementById('nav-container').innerHTML = html;
+}
+
+function navigate(id) {
+  const page = pages.find(p => p.id === id);
+  if (!page) return;
+  currentPage = id;
+  renderPage(page);
+  renderNav();
+  if (unlocked) updateLockUI();
+}
+
+// ===== RENDER PAGE =====
+function renderPage(page) {
+  document.getElementById('breadcrumb').innerHTML = `玖镇秘典 <span>›</span> ${page.category} <span>›</span> ${page.title}`;
+  document.title = `${page.title} — 玖镇秘典`;
+
+  const content = document.getElementById('content');
+  const rendered = markdownToHtml(page.content || '');
+
+  content.innerHTML = `
+    <div class="page-header">
+      <div class="page-tag">${page.icon} ${page.tag || page.category}</div>
+      <div class="page-title">${page.title}</div>
+      ${page.desc ? `<div class="page-desc">${page.desc}</div>` : ''}
+    </div>
+    <div class="wiki-content">${rendered}</div>
+  `;
+
+  // Show edit button if unlocked
+  document.getElementById('edit-btn').classList.toggle('show', unlocked);
+}
+
+// ===== MARKDOWN RENDERER =====
+function markdownToHtml(md) {
+  let html = escapeHtml(md);
+
+  // Tables
+  html = html.replace(/((?:\|.+\|\n?)+)/g, (match) => {
+    const rows = match.trim().split('\n').filter(r => r.trim());
+    let tableHtml = '<table class="stat-table">';
+    rows.forEach((row, i) => {
+      if (row.replace(/[|\s-]/g, '') === '') return;
+      const cells = row.split('|').filter(c => c.trim() !== '' || i === 0).map(c => c.trim());
+      const validCells = cells.filter(c => !/^-+$/.test(c));
+      if (validCells.length === 0) return;
+      if (i === 0) {
+        tableHtml += '<thead><tr>' + validCells.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+      } else if (!/^\|?\s*-+/.test(row)) {
+        tableHtml += '<tr>' + validCells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+      }
+    });
+    tableHtml += '</tbody></table>';
+    return tableHtml;
+  });
+
+  // Headings
+  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+  // Bold, em
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Blockquote
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote style="border-left:4px solid var(--gold);padding:10px 16px;background:rgba(180,134,11,0.06);margin:12px 0;font-style:italic;color:var(--smoke);">$1</blockquote>');
+
+  // HR
+  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px dashed var(--border);margin:24px 0;">');
+
+  // Lists
+  html = html.replace(/^(\d+)\. (.+)$/gm, '<li class="ordered">$2</li>');
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>(?:(?!<\/li>)[\s\S])*<\/li>\n?)+/g, match => {
+    if (match.includes('class="ordered"')) {
+      return '<ol>' + match.replace(/ class="ordered"/g, '') + '</ol>';
+    }
+    return '<ul>' + match + '</ul>';
+  });
+
+  // Paragraphs
+  const lines = html.split('\n');
+  const result = [];
+  let inBlock = false;
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed) { inBlock = false; result.push(''); return; }
+    if (trimmed.startsWith('<h') || trimmed.startsWith('<ul') || trimmed.startsWith('<ol') || trimmed.startsWith('<table') || trimmed.startsWith('<hr') || trimmed.startsWith('<blockquote') || trimmed.startsWith('<li')) {
+      inBlock = false;
+      result.push(trimmed);
+    } else {
+      if (!inBlock) result.push('<p>' + trimmed);
+      else result[result.length-1] += ' ' + trimmed;
+      inBlock = true;
+    }
+  });
+  const joined = result.join('\n');
+  return joined.replace(/<p>([^<]+?)(?=\n|$)/g, '<p>$1</p>');
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== EDITOR =====
+function openEditor() {
+  if (!userPerms.can_edit) { openTokenModal(); return; }
+  const page = pages.find(p => p.id === currentPage);
+  if (!page) return;
+  document.getElementById('editor-title-input').value = page.title;
+  document.getElementById('editor-textarea').value = page.content || '';
+  document.getElementById('editor-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('editor-textarea').focus(), 100);
+}
+
+function closeEditor() {
+  document.getElementById('editor-overlay').classList.remove('show');
+}
+
+function savePage() {
+  const page = pages.find(p => p.id === currentPage);
+  if (!page) return;
+  page.title = document.getElementById('editor-title-input').value || page.title;
+  page.content = document.getElementById('editor-textarea').value;
+  saveData({ pages });
+  closeEditor();
+  renderPage(page);
+  renderNav();
+  showToast('✅ 页面已保存！');
+}
+
+function saveFromTopbar() { savePage(); }
+
+function insertMd(before, after) {
+  const ta = document.getElementById('editor-textarea');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const selected = ta.value.substring(start, end);
+  const newText = before + selected + after;
+  ta.value = ta.value.substring(0, start) + newText + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + selected.length;
+}
+
+async function savePage() {
+  const page = pages.find(p => p.id === currentPage);
+  if (!page) return;
+  page.title = document.getElementById('editor-title-input').value || page.title;
+  page.content = document.getElementById('editor-textarea').value;
+  
+  const statusEl = document.getElementById('editor-save-status');
+  if (statusEl) statusEl.textContent = '保存中…';
+  
+  const ok = await savePages();
+  if (ok) {
+    closeEditor();
+    renderPage(page);
+    renderNav();
+    showToast('✅ 页面已保存并同步到 GitHub！');
+  }
+  if (statusEl) statusEl.textContent = '';
+}
+
+function saveFromTopbar() { savePage(); }
+
+function insertMd(before, after) {
+  const ta = document.getElementById('editor-textarea');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const selected = ta.value.substring(start, end);
+  const newText = before + selected + after;
+  ta.value = ta.value.substring(0, start) + newText + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + selected.length;
+}
+
+async function newPage() {
+  if (!userPerms.can_create) return;
+  const id = 'page_' + Date.now();
+  const newP = {
+    id, title: '新页面', icon: '📄', category: '其他', tag: '自定义',
+    desc: '点击编辑按钮开始编写内容。', content: '## 新页面\n\n在此输入内容…'
+  };
+  pages.push(newP);
+  renderNav();
+  navigate(id);
+  setTimeout(() => openEditor(), 300);
+}
+
+function confirmDelete() {
+  if (!userPerms.can_delete) return;
+  const page = pages.find(p => p.id === currentPage);
+  if (!page || !currentPage.startsWith('page_')) return;
+  document.getElementById('confirm-msg').innerHTML = `确定要删除「<strong>${page.title}</strong>」吗？<br>此操作无法撤销。`;
+  document.getElementById('confirm-overlay').classList.add('show');
+}
+
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+async function doDelete() {
+  const idx = pages.findIndex(p => p.id === currentPage);
+  if (idx === -1) return;
+  pages.splice(idx, 1);
+  const ok = await savePages();
+  if (ok) {
+    closeConfirm();
+    showToast('🗑️ 页面已删除');
+    const nextPage = pages[Math.max(0, idx - 1)] || pages[0];
+    if (nextPage) navigate(nextPage.id);
+    renderNav();
+  }
+}
+
+function doSearch(query) {
+  const results = document.getElementById('search-results');
+  if (!query || query.length < 1) { results.classList.remove('show'); return; }
+  const q = query.toLowerCase();
+  const hits = [];
+  pages.forEach(p => {
+    const titleMatch = p.title.toLowerCase().includes(q);
+    const contentMatch = p.content && p.content.toLowerCase().includes(q);
+    if (titleMatch || contentMatch) {
+      let excerpt = '';
+      if (contentMatch && p.content) {
+        const idx = p.content.toLowerCase().indexOf(q);
+        const start = Math.max(0, idx - 40);
+        excerpt = (start > 0 ? '…' : '') + p.content.substring(start, idx + 60) + '…';
+        excerpt = excerpt.replace(new RegExp(query, 'gi'), m => `<mark>${m}</mark>`);
+      }
+      hits.push({ page: p, excerpt });
+    }
+  });
+  if (hits.length === 0) {
+    results.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:var(--smoke);font-family:Noto Sans SC">未找到相关内容</div>';
+  } else {
+    results.innerHTML = hits.slice(0, 8).map(h => `
+      <div class="search-hit" onclick="navigate('${h.page.id}');closeSearch()">
+        <div class="hit-title">${h.page.icon} ${h.page.title}</div>
+        ${h.excerpt ? `<div class="hit-excerpt">${h.excerpt}</div>` : ''}
+      </div>
+    `).join('');
+  }
+  results.classList.add('show');
+}
+
+function closeSearch() {
+  document.getElementById('search-results').classList.remove('show');
+  document.getElementById('search').value = '';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#search-wrap')) closeSearch();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeEditor(); closeTokenModal(); closeSearch(); closeConfirm();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's' && document.getElementById('editor-overlay').classList.contains('show')) {
+    e.preventDefault();
+    savePage();
+  }
+});
+
+// ===== INIT =====
+async function init() {
+  await loadConfig();
+  await loadToken();
+  await loadPages();
+  renderNav();
+  navigate('home');
+  updateAuthUI();
+  updateLockUI();
+}
+
+init();
+</script>
+</body>
+</html>

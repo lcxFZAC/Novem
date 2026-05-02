@@ -1,0 +1,35 @@
+{
+  "site": {
+    "title": "玖镇秘典",
+    "subtitle": "世界知识库",
+    "repo": "YOUR_GITHUB_USERNAME/jiuzhen-wiki",
+    "branch": "main"
+  },
+  "users": [
+    {
+      "github_username": "YOUR_GITHUB_USERNAME",
+      "role": "admin",
+      "display_name": "管理员"
+    }
+  ],
+  "roles": {
+    "admin": {
+      "label": "典守",
+      "can_edit": true,
+      "can_delete": true,
+      "can_create": true
+    },
+    "editor": {
+      "label": "笔吏",
+      "can_edit": true,
+      "can_delete": false,
+      "can_create": true
+    },
+    "viewer": {
+      "label": "访客",
+      "can_edit": false,
+      "can_delete": false,
+      "can_create": false
+    }
+  }
+}
