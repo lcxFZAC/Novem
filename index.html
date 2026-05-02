@@ -995,13 +995,33 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #preloader.hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+#preloader-content {
+  transition: opacity 0.45s cubic-bezier(0.4, 0, 1, 1),
+              transform 0.45s cubic-bezier(0.4, 0, 1, 1);
+}
+
+#preloader.leaving #preloader-content {
+  opacity: 0;
+  transform: translateY(-28px) scale(0.97);
+}
+
+#preloader-bg,
+#preloader-overlay {
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#preloader.leaving #preloader-bg,
+#preloader.leaving #preloader-overlay {
+  opacity: 0;
 }
 
 #preloader-bg {
@@ -1304,8 +1324,13 @@ const PRELOADER_SHOW_BG = false;  // 改为 false 可关闭背景图，只显示
 
 function enterSite() {
   const el = document.getElementById('preloader');
-  el.classList.add('hidden');
-  el.addEventListener('transitionend', () => el.remove(), { once: true });
+  // 第一阶段：内容先上浮消失
+  el.classList.add('leaving');
+  // 第二阶段：0.35s 后整体淡出
+  setTimeout(() => {
+    el.classList.add('hidden');
+    el.addEventListener('transitionend', () => el.remove(), { once: true });
+  }, 350);
 }
 
 // ===== CONFIG =====
