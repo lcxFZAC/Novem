@@ -923,6 +923,7 @@
   padding: 4px 8px;
 }
 </style>
+<!-- __WIKI_USERS_SCRIPT__ -->
 </head>
 <div id="app">
   <!-- SIDEBAR -->
@@ -2699,13 +2700,11 @@ async function ghFetch(path, options = {}) {
 }
 
 async function loadConfig() {
-  // Site config (non-secret) loaded from config.json
-  // User list is injected at build time by GitHub Actions from repository secret
+  // User list is injected at build time into window.__WIKI_USERS__ by GitHub Actions
   try {
     const res = await fetch('config.json?_=' + Date.now());
     const base = await res.json();
-    // __USERS_INJECT__ is replaced by the build script with the actual user list
-    const injectedUsers = __USERS_INJECT__;
+    const injectedUsers = (typeof window.__WIKI_USERS__ !== 'undefined') ? window.__WIKI_USERS__ : [];
     siteConfig = { ...base, users: injectedUsers };
   } catch(e) {
     siteConfig = { site: { repo: '', branch: 'main' }, users: [], roles: {} };

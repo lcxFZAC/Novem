@@ -28,28 +28,37 @@ jobs:
         env:
           WIKI_USERS: ${{ secrets.WIKI_USERS }}
         run: |
-          echo "$WIKI_USERS" > /tmp/users.json
           python3 - << 'PYEOF'
-          import json, sys
-          with open('/tmp/users.json', 'r') as f:
-              raw = f.read().strip()
+          import json, sys, os
+
+          raw = os.environ.get('WIKI_USERS', '').strip()
+
           if not raw:
               print("ERROR: WIKI_USERS secret is empty.")
               sys.exit(1)
+
           try:
               users = json.loads(raw)
           except json.JSONDecodeError as e:
               print(f"ERROR: WIKI_USERS is not valid JSON: {e}")
               sys.exit(1)
+
           with open('index.html', 'r', encoding='utf-8') as f:
               html = f.read()
-          if '__USERS_INJECT__' not in html:
-              print("ERROR: placeholder not found in index.html")
+
+          marker = '<!-- __WIKI_USERS_SCRIPT__ -->'
+          if marker not in html:
+              print("ERROR: marker comment not found in index.html")
               sys.exit(1)
-          users_js = json.dumps(users, ensure_ascii=False)
-          html = html.replace('__USERS_INJECT__', users_js)
+
+          # Inject as a separate <script> block — safe from any string collision
+          users_json = json.dumps(users, ensure_ascii=False)
+          script_tag = f'<script>window.__WIKI_USERS__ = {users_json};</script>'
+          html = html.replace(marker, script_tag)
+
           with open('index.html', 'w', encoding='utf-8') as f:
               f.write(html)
+
           print(f"Injected {len(users)} user(s)")
           PYEOF
 
