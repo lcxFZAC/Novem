@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "serve (npx)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "4399", "."],
+      "port": 4399
+    },
+    {
+      "name": "python http.server",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "4400"],
+      "port": 4400
+    }
+  ]
+}
