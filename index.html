@@ -1288,7 +1288,10 @@
 
 <script>
 // ===== PRELOADER =====
+const PRELOADER_SHOW_BG = true;  // 改为 false 可关闭背景图，只显示渐变色
+
 (function() {
+  if (!PRELOADER_SHOW_BG) return;
   const bg = document.getElementById('preloader-bg');
   const img = new Image();
   img.onload = function() {
