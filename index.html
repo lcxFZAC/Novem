@@ -3054,7 +3054,7 @@ function markdownToHtml(md) {
     let tableHtml = '<table class="stat-table">';
     rows.forEach((row, i) => {
       if (row.replace(/[|\s-]/g, '') === '') return;
-      const cells = row.split('|').filter(c => c.trim() !== '' || i === 0).map(c => c.trim());
+      const cells = row.split('|').map(c => c.trim()).filter(c => c !== '');
       const validCells = cells.filter(c => !/^-+$/.test(c));
       if (validCells.length === 0) return;
       if (i === 0) {
