@@ -3025,12 +3025,14 @@ async function loadPages() {
         const data = await res.json();
         dataSha = data.sha;
         const decoded = JSON.parse(atob(data.content.replace(/\n/g, '')));
-        if (decoded && decoded.pages) {
+        if (decoded && decoded.pages && decoded.pages.length > 0) {
           pages = decoded.pages;
           // cache locally
           try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pages, sha: dataSha })); } catch(e) {}
           return;
         }
+        // pages.json 存在但内容为空，记录 sha 留作后续保存用，继续降级
+        if (decoded && Array.isArray(decoded.pages)) dataSha = data.sha;
       }
     } catch(e) { console.warn('GitHub load failed, using cache/defaults:', e); }
   }
