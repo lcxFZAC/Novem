@@ -3041,7 +3041,7 @@ async function loadPages() {
     const cached = localStorage.getItem(STORAGE_KEY);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (parsed.pages) { pages = parsed.pages; dataSha = parsed.sha || null; return; }
+      if (parsed.pages && parsed.pages.length > 0) { pages = parsed.pages; dataSha = parsed.sha || null; return; }
     }
   } catch(e) {}
   // Final fallback: defaults (already set)
