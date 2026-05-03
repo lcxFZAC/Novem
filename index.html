@@ -260,6 +260,108 @@
   .confirm-delete { background: var(--red); color: #fff; }
   .confirm-delete:hover { background: var(--red2); }
 
+  /* ===== HISTORY MODAL ===== */
+  #history-btn {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(180,134,11,0.25);
+    background: transparent;
+    color: rgba(245,239,224,0.4);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  #history-btn.show { display: flex; }
+  #history-btn:hover { background: rgba(180,134,11,0.1); color: rgba(245,239,224,0.7); }
+
+  #history-modal {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    width: 520px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  #history-modal h2 {
+    font-size: 18px; font-weight: 700; letter-spacing: 3px;
+    color: var(--ink); padding: 24px 28px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  #history-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0;
+  }
+  .history-item {
+    display: flex; align-items: center;
+    padding: 12px 28px;
+    gap: 14px;
+    border-bottom: 1px solid rgba(197,169,111,0.15);
+    transition: background 0.15s;
+  }
+  .history-item:hover { background: rgba(180,134,11,0.06); }
+  .history-item-info { flex: 1; min-width: 0; }
+  .history-item-time {
+    font-size: 12px; color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 3px;
+  }
+  .history-item-msg {
+    font-size: 13px; color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .history-item-pages {
+    font-size: 11px; color: rgba(107,95,78,0.6);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 2px;
+  }
+  .history-restore-btn {
+    flex-shrink: 0;
+    padding: 5px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    color: var(--smoke);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .history-restore-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(180,134,11,0.08); }
+  .history-restore-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #history-loading {
+    text-align: center; padding: 40px;
+    color: var(--smoke); font-family: 'Noto Sans SC', sans-serif; font-size: 13px;
+  }
+  #history-close {
+    margin: 16px 28px;
+    padding: 9px;
+    width: calc(100% - 56px);
+    border: 1px solid var(--border);
+    background: var(--paper2);
+    border-radius: 4px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    color: var(--smoke);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  #history-close:hover { background: var(--scroll); }
+
   /* ===== CONTENT ===== */
   #content {
     flex: 1;
@@ -1204,6 +1306,7 @@
         <span id="lock-icon">🔒</span>
         <span id="lock-label">解锁编辑</span>
       </button>
+      <button id="history-btn" onclick="openHistory()">📜 历史记录</button>
     </div>
   </nav>
 
@@ -1296,6 +1399,15 @@
       <button class="confirm-cancel" onclick="closeConfirm()">取消</button>
       <button class="confirm-delete" onclick="doDelete()">确认删除</button>
     </div>
+  </div>
+
+  <!-- HISTORY MODAL -->
+  <div id="history-modal">
+    <h2>📜 历史记录</h2>
+    <div id="history-list">
+      <div id="history-loading">加载中…</div>
+    </div>
+    <button id="history-close" onclick="closeHistory()">关闭</button>
   </div>
 </div>
 
@@ -3204,6 +3316,12 @@ function updateLockUI() {
   if (userPerms.can_create) newPageBtn.classList.add('show');
   else newPageBtn.classList.remove('show');
 
+  const historyBtn = document.getElementById('history-btn');
+  if (historyBtn) {
+    if (userPerms.can_edit) historyBtn.classList.add('show');
+    else historyBtn.classList.remove('show');
+  }
+
   if (userPerms.can_edit && currentPage) editBtn.classList.add('show');
   else editBtn.classList.remove('show');
 
@@ -3452,6 +3570,89 @@ function confirmDelete() {
 }
 
 function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+// ===== HISTORY =====
+function openHistory() {
+  document.getElementById('confirm-overlay').classList.add('show');
+  document.getElementById('confirm-modal').style.display = 'none';
+  document.getElementById('history-modal').style.display = 'flex';
+  loadHistory();
+}
+
+function closeHistory() {
+  document.getElementById('confirm-overlay').classList.remove('show');
+  document.getElementById('confirm-modal').style.display = '';
+  document.getElementById('history-modal').style.display = '';
+}
+
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return '刚刚';
+  if (mins < 60) return `${mins} 分钟前`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} 小时前`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days} 天前`;
+  return new Date(dateStr).toLocaleDateString('zh-CN');
+}
+
+async function loadHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = '<div id="history-loading">加载中…</div>';
+  const repo = siteConfig && siteConfig.site.repo;
+  if (!repo) { list.innerHTML = '<div id="history-loading">需要先登录</div>'; return; }
+  try {
+    const res = await ghFetch(`/repos/${repo}/commits?path=${DATA_FILE}&per_page=15`);
+    if (!res.ok) throw new Error(res.status);
+    const commits = await res.json();
+    if (!commits.length) { list.innerHTML = '<div id="history-loading">暂无历史记录</div>'; return; }
+    list.innerHTML = commits.map((c, i) => `
+      <div class="history-item">
+        <div class="history-item-info">
+          <div class="history-item-time">${timeAgo(c.commit.author.date)} &nbsp;·&nbsp; ${c.commit.author.name}</div>
+          <div class="history-item-msg">${escapeHtml(c.commit.message.split('\n')[0])}</div>
+        </div>
+        <button class="history-restore-btn" onclick="restoreHistory('${c.sha}', this)">
+          ${i === 0 ? '当前版本' : '恢复'}
+        </button>
+      </div>
+    `).join('');
+    // 当前版本按钮置灰
+    list.querySelector('.history-restore-btn').disabled = true;
+  } catch(e) {
+    list.innerHTML = `<div id="history-loading">加载失败：${e.message}</div>`;
+  }
+}
+
+async function restoreHistory(sha, btn) {
+  if (!confirm('确定要恢复到这个版本吗？当前所有页面内容将被替换。')) return;
+  btn.disabled = true;
+  btn.textContent = '恢复中…';
+  try {
+    const repo = siteConfig.site.repo;
+    const res = await ghFetch(`/repos/${repo}/contents/${DATA_FILE}?ref=${sha}`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const decoded = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+    if (!decoded || !decoded.pages) throw new Error('数据格式错误');
+    pages = decoded.pages;
+    // 立即保存回最新版本
+    const ok = await savePages();
+    if (ok) {
+      showToast('✅ 已恢复到历史版本');
+      closeHistory();
+      navigate(pages[0]?.id || 'home');
+    } else {
+      btn.disabled = false;
+      btn.textContent = '恢复';
+    }
+  } catch(e) {
+    showToast('❌ 恢复失败：' + e.message);
+    btn.disabled = false;
+    btn.textContent = '恢复';
+  }
+}
 
 async function doDelete() {
   const idx = pages.findIndex(p => p.id === currentPage);
