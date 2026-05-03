@@ -3074,7 +3074,13 @@ async function savePages() {
   } else {
     const err = await res.json();
     console.error('Save error:', err);
-    showToast('❌ 保存失败：' + (err.message || '未知错误'));
+    if (res.status === 404 || res.status === 403) {
+      showToast('❌ 保存失败：Token 无此仓库写权限，请重新登录');
+    } else if (res.status === 409) {
+      showToast('❌ 保存冲突：页面已被他人修改，请刷新后重试');
+    } else {
+      showToast('❌ 保存失败：' + (err.message || '未知错误'));
+    }
     return false;
   }
 }
