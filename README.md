@@ -37,5 +37,4 @@ jiuzhen-wiki/
 
 在 GitHub 仓库 **Settings → Secrets → WIKI_USERS** 里直接编辑 JSON，  
 然后触发一次部署（push 任意文件，或手动 Actions → Run workflow）即可生效。
-
 > Token 仅存在用户自己浏览器的 localStorage，不经过任何服务器。
