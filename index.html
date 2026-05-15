@@ -3618,7 +3618,8 @@ function updateLockUI() {
     else historyBtn.classList.remove('show');
   }
 
-  if (userPerms.can_edit && currentPage) editBtn.classList.add('show');
+  const NO_EDIT_PAGES = ['equipment', 'equipment-lottery'];
+  if (userPerms.can_edit && currentPage && !NO_EDIT_PAGES.includes(currentPage)) editBtn.classList.add('show');
   else editBtn.classList.remove('show');
 
   const isCustomPage = currentPage && currentPage.startsWith('page_');
