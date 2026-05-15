@@ -24,6 +24,43 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(184, 134, 11, 0.35);
+    border-radius: 3px;
+    transition: background 0.2s;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 160, 23, 0.7);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* 深色背景（侧边栏）内的滚动条 */
+  #sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+  }
+  #sidebar::-webkit-scrollbar-thumb {
+    background: rgba(184, 134, 11, 0.4);
+    border-radius: 3px;
+  }
+  #sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 160, 23, 0.75);
+  }
+
+  body:has(#preloader:not(.hidden)) {
+    overflow: hidden;
+  }
+
   body {
     font-family: 'Noto Serif SC', serif;
     background: var(--paper);
@@ -3677,6 +3714,7 @@ function navigate(id) {
     renderPage(page);
     renderNav();
     updateLockUI();
+    window.scrollTo({ top: 0, behavior: 'instant' });
     // 入场起点：下方 + 透明（无过渡）
     content.classList.remove('page-fade-out');
     content.classList.add('page-fade-in');
