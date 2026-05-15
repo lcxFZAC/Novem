@@ -3404,6 +3404,18 @@ async function loadConfig() {
   }
 }
 
+// Pages that are always dynamically rendered and must never be lost after a remote load.
+const BUILTIN_PAGE_IDS = ['equipment-lottery'];
+
+function mergeBuiltinPages() {
+  for (const id of BUILTIN_PAGE_IDS) {
+    if (!pages.find(p => p.id === id)) {
+      const def = DEFAULT_PAGES.find(p => p.id === id);
+      if (def) pages.push(def);
+    }
+  }
+}
+
 async function loadPages() {
   // Try GitHub API first (always fresh)
   if (siteConfig && siteConfig.site.repo) {
@@ -3417,6 +3429,7 @@ async function loadPages() {
         const decoded = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
         if (decoded && decoded.pages && decoded.pages.length > 0) {
           pages = decoded.pages;
+          mergeBuiltinPages();
           // cache locally
           try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pages, sha: dataSha })); } catch(e) {}
           return;
@@ -3431,10 +3444,15 @@ async function loadPages() {
     const cached = localStorage.getItem(STORAGE_KEY);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (parsed.pages && parsed.pages.length > 0) { pages = parsed.pages; dataSha = parsed.sha || null; return; }
+      if (parsed.pages && parsed.pages.length > 0) {
+        pages = parsed.pages;
+        mergeBuiltinPages();
+        dataSha = parsed.sha || null;
+        return;
+      }
     }
   } catch(e) {}
-  // Final fallback: defaults (already set)
+  // Final fallback: defaults (already set, builtins already included)
 }
 
 async function savePages() {
@@ -3748,11 +3766,15 @@ function resetPools() {
   refreshLotteryPage('✅ 已恢复默认装备库');
 }
 
-function refreshLotteryPage(statusMsg) {
-  const page = pages.find(p => p.id === 'equipment-lottery');
-  if (page && currentPage === 'equipment-lottery') renderPage(page);
+function refreshEquipPages(statusMsg) {
+  const cur = pages.find(p => p.id === currentPage);
+  if (cur && (currentPage === 'equipment-lottery' || currentPage === 'equipment')) {
+    renderPage(cur);
+  }
   if (statusMsg) showPoolsStatus(statusMsg, false);
 }
+// alias kept for internal calls
+const refreshLotteryPage = refreshEquipPages;
 
 function showPoolsStatus(msg, isError) {
   const el = document.getElementById('pools-status');
@@ -4068,6 +4090,54 @@ function buildLotteryUI() {
   `;
 }
 
+// ===== EQUIPMENT PAGE DYNAMIC CONTENT =====
+function renderItemsGrid(items, cols) {
+  let html = '<table class="stat-table"><tbody>';
+  for (let i = 0; i < items.length; i += cols) {
+    html += '<tr>';
+    for (let j = 0; j < cols; j++) {
+      html += `<td>${items[i + j] || '—'}</td>`;
+    }
+    html += '</tr>';
+  }
+  return html + '</tbody></table>';
+}
+
+function buildEquipmentContent() {
+  // Group pools by top-level category (part before first ·)
+  const groups = new Map();
+  for (const [key, items] of Object.entries(EQUIP_POOLS)) {
+    const sep = key.indexOf('·');
+    const cat = sep >= 0 ? key.slice(0, sep) : key;
+    const sub = sep >= 0 ? key.slice(sep + 1) : null;
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push({ sub, items });
+  }
+
+  const cats = [...groups.keys()];
+  let html = `
+    <h2>装备体系概述</h2>
+    <p>装备分为<strong>${cats.join('、')}</strong>等类别。</p>
+    <p>一个角色可以拥有<strong>五个装备位</strong>：一般头、胸、腿提供防御属性，饰品提供效果属性。</p>
+    <hr>
+  `;
+
+  for (const [cat, pools] of groups) {
+    const isSeal = cat.includes('印章');
+    html += `<h2>${cat}</h2>`;
+    for (const { sub, items } of pools) {
+      if (sub) html += `<h3>${sub}</h3>`;
+      if (isSeal) {
+        html += '<ul>' + items.map(x => `<li>${x}</li>`).join('') + '</ul>';
+      } else {
+        html += renderItemsGrid(items, 4);
+      }
+    }
+    html += '<hr>';
+  }
+  return html;
+}
+
 // ===== RENDER PAGE =====
 function renderPage(page) {
   document.getElementById('breadcrumb').innerHTML = `玖镇秘典 <span>›</span> ${page.category} <span>›</span> ${page.title}`;
@@ -4087,6 +4157,19 @@ function renderPage(page) {
     `;
     document.getElementById('edit-btn').classList.remove('show');
     levelUpdateThresholds();
+    return;
+  }
+
+  if (page.id === 'equipment') {
+    content.innerHTML = `
+      <div class="page-header">
+        <div class="page-tag">${page.icon} ${page.tag || page.category}</div>
+        <div class="page-title">${page.title}</div>
+        ${page.desc ? `<div class="page-desc">${page.desc}</div>` : ''}
+      </div>
+      <div class="wiki-content">${buildEquipmentContent()}</div>
+    `;
+    document.getElementById('edit-btn').classList.remove('show');
     return;
   }
 
