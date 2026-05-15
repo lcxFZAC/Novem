@@ -3404,6 +3404,18 @@ async function loadConfig() {
   }
 }
 
+// Pages that are always dynamically rendered and must never be lost after a remote load.
+const BUILTIN_PAGE_IDS = ['equipment-lottery'];
+
+function mergeBuiltinPages() {
+  for (const id of BUILTIN_PAGE_IDS) {
+    if (!pages.find(p => p.id === id)) {
+      const def = DEFAULT_PAGES.find(p => p.id === id);
+      if (def) pages.push(def);
+    }
+  }
+}
+
 async function loadPages() {
   // Try GitHub API first (always fresh)
   if (siteConfig && siteConfig.site.repo) {
@@ -3417,6 +3429,7 @@ async function loadPages() {
         const decoded = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
         if (decoded && decoded.pages && decoded.pages.length > 0) {
           pages = decoded.pages;
+          mergeBuiltinPages();
           // cache locally
           try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pages, sha: dataSha })); } catch(e) {}
           return;
@@ -3431,10 +3444,15 @@ async function loadPages() {
     const cached = localStorage.getItem(STORAGE_KEY);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (parsed.pages && parsed.pages.length > 0) { pages = parsed.pages; dataSha = parsed.sha || null; return; }
+      if (parsed.pages && parsed.pages.length > 0) {
+        pages = parsed.pages;
+        mergeBuiltinPages();
+        dataSha = parsed.sha || null;
+        return;
+      }
     }
   } catch(e) {}
-  // Final fallback: defaults (already set)
+  // Final fallback: defaults (already set, builtins already included)
 }
 
 async function savePages() {
