@@ -1178,16 +1178,21 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-#preloader-lantern {
-  font-size: 48px;
+#preloader-logo {
+  width: clamp(80px, 14vw, 140px);
+  height: auto;
   margin-bottom: 20px;
-  filter: drop-shadow(0 0 18px rgba(220,80,30,0.8));
-  animation: lantern-sway 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 24px rgba(212,160,23,0.5));
+  opacity: 0;
 }
 
-@keyframes lantern-sway {
-  from { transform: rotate(-4deg) translateY(0); }
-  to   { transform: rotate(4deg) translateY(-6px); }
+#preloader-logo.logo-ready {
+  animation: logo-fadein 1.4s ease forwards;
+}
+
+@keyframes logo-fadein {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 #preloader-title {
@@ -1284,7 +1289,7 @@
   <div id="preloader-bg"></div>
   <div id="preloader-overlay"></div>
   <div id="preloader-content">
-    <div id="preloader-lantern">🏮</div>
+    <img id="preloader-logo" src="Logo.png" alt="Logo" onload="this.classList.add('logo-ready')">
     <div id="preloader-title">欢迎来到玖镇</div>
     <div id="preloader-divider"></div>
     <div id="preloader-sub">华夏玖镇 · 世界知识库</div>
