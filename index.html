@@ -1181,6 +1181,73 @@
   .grade-pu    { color: #1a6038; text-shadow: 0 0 12px rgba(20,120,60,0.3); }
   .grade-shi   { color: var(--smoke); }
   .grade-dashi { color: var(--red); text-shadow: 0 0 12px rgba(139,26,26,0.35); }
+
+  /* ===== POOLS IMPORT/EXPORT ===== */
+  .pools-mgmt {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 16px;
+    background: rgba(180,134,11,0.03);
+    margin-bottom: 20px;
+  }
+  .pools-mgmt-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--smoke);
+    letter-spacing: 2px;
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 10px;
+  }
+  .pools-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pools-btn {
+    padding: 6px 14px;
+    border-radius: 3px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pools-btn-export {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+  }
+  .pools-btn-export:hover { background: rgba(180,134,11,0.1); }
+  .pools-btn-import {
+    background: transparent;
+    border: 1px solid var(--jade2);
+    color: var(--jade2);
+    position: relative;
+    overflow: hidden;
+  }
+  .pools-btn-import:hover { background: rgba(46,139,87,0.08); }
+  .pools-btn-import input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+  }
+  .pools-btn-reset {
+    background: transparent;
+    border: 1px solid var(--smoke);
+    color: var(--smoke);
+  }
+  .pools-btn-reset:hover { border-color: var(--red); color: var(--red); }
+  .pools-status {
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 8px;
+    min-height: 16px;
+    transition: color 0.2s;
+  }
+  .pools-summary {
+    font-size: 11px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 6px;
+  }
 </style>
 
 <style>
@@ -3297,6 +3364,15 @@ const DEFAULT_PAGES = [
 | 七宝璎珞 | 青铜纵目 | 朱雀翎 |
 | 玄武甲片 | 青龙逆鳞 | 白虎牙饰 |
 | 望舒簪 | 羲和璧 | — |`
+  },
+  {
+    id: 'equipment-lottery',
+    title: '装备抽签台',
+    icon: '🎲',
+    category: '道具系统',
+    tag: '抽签',
+    desc: '装备池掷骰工具：rd100 成功等级判定 + 各部位指定抽签，支持 JSON 导入导出管理装备库。',
+    content: ''
   }
 ];
 
@@ -3595,7 +3671,7 @@ function navigate(id) {
 }
 
 // ===== EQUIPMENT LOTTERY =====
-const EQUIP_POOLS = {
+const BASE_EQUIP_POOLS = {
   '印章·大成功': ['万年寒玉印','雷霆都司印','灵宝大法司印','红莲火印','司辰挂印'],
   '印章·极难':  ['五雷斩勘印','金光抖银印','天挂水印','斩妖缚邪印','北极驱邪印','紫府丹鼎印','五岳真形印','铁麟印','阴阳八卦印'],
   '印章·困难':  ['九天玄女印','幽冥印','太乙救苦天尊印','玉皇敕命印','东极青华印','南极长生印','二十八宿印','雷击木印','摄召亡魂印','禹步锁关印','净明法主印'],
@@ -3608,6 +3684,84 @@ const EQUIP_POOLS = {
   '腿甲':       ['岳峙胫甲','风行绑腿','玄武腿缚','登云靴甲','混沌腿铠','石犀护腿','灵鹤胫甲','虎胫护膝','磐石腿甲','追月胫甲','夔牛战靴','金乌飞羽','蝉影护胫','贪狼腿铠','墨家机关胫','烛龙胫甲','不动尊护膝','八卦阵图腿甲'],
   '饰品':       ['同心环','相思红豆','步摇金钗','君子玉块','玲珑骰子','安息香囊','七宝璎珞','青铜纵目','朱雀翎','玄武甲片','青龙逆鳞','白虎牙饰','望舒簪','羲和璧']
 };
+
+let EQUIP_POOLS = Object.assign({}, BASE_EQUIP_POOLS);
+const POOLS_STORAGE_KEY = 'novem-equip-pools-v1';
+
+function loadPoolsFromStorage() {
+  try {
+    const saved = localStorage.getItem(POOLS_STORAGE_KEY);
+    if (saved) EQUIP_POOLS = JSON.parse(saved);
+  } catch(e) {}
+}
+
+function savePoolsToStorage() {
+  try { localStorage.setItem(POOLS_STORAGE_KEY, JSON.stringify(EQUIP_POOLS)); } catch(e) {}
+}
+
+function exportPools() {
+  const json = JSON.stringify(EQUIP_POOLS, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '装备池.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importPoolsFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    applyPoolsImport(e.target.result);
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function applyPoolsImport(text) {
+  try {
+    const data = JSON.parse(text);
+    if (typeof data !== 'object' || Array.isArray(data)) throw new Error('顶层须为 JSON 对象');
+    for (const [k, v] of Object.entries(data)) {
+      if (!Array.isArray(v)) throw new Error(`"${k}" 的值须为字符串数组`);
+      if (v.some(x => typeof x !== 'string')) throw new Error(`"${k}" 数组含有非字符串元素`);
+      if (v.length === 0) throw new Error(`"${k}" 数组不能为空`);
+    }
+    if (Object.keys(data).length === 0) throw new Error('装备池不能为空对象');
+    EQUIP_POOLS = data;
+    savePoolsToStorage();
+    refreshLotteryPage('✅ 导入成功，共 ' + Object.keys(data).length + ' 个池');
+  } catch(e) {
+    showPoolsStatus('❌ 导入失败：' + e.message, true);
+  }
+}
+
+function resetPools() {
+  if (!confirm('恢复为内置默认装备池？自定义数据将丢失。')) return;
+  EQUIP_POOLS = Object.assign({}, BASE_EQUIP_POOLS);
+  localStorage.removeItem(POOLS_STORAGE_KEY);
+  refreshLotteryPage('✅ 已恢复默认装备库');
+}
+
+function refreshLotteryPage(statusMsg) {
+  const page = pages.find(p => p.id === 'equipment-lottery');
+  if (page && currentPage === 'equipment-lottery') renderPage(page);
+  if (statusMsg) showPoolsStatus(statusMsg, false);
+}
+
+function showPoolsStatus(msg, isError) {
+  const el = document.getElementById('pools-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--red)' : 'var(--jade2)';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.textContent = ''; }, 5000);
+}
 
 function lotteryCurrentPool() {
   const sel = document.getElementById('lottery-pool-select');
@@ -3796,6 +3950,13 @@ function levelQuery() {
   el.innerHTML = `<div class="level-result-inner">${levelGradeHTML(grade, val, pool, true)}</div>`;
 }
 
+function buildPoolsSummary() {
+  const entries = Object.entries(EQUIP_POOLS);
+  const total = entries.reduce((s, [, v]) => s + v.length, 0);
+  return `${entries.length} 个池 · 共 ${total} 件装备` +
+    (localStorage.getItem(POOLS_STORAGE_KEY) ? '　<span style="color:var(--jade2)">●</span> 自定义数据' : '　<span style="color:var(--smoke)">●</span> 默认数据');
+}
+
 function buildLotteryUI() {
   const opts = Object.entries(EQUIP_POOLS)
     .map(([k, v]) => `<option value="${k}">${k}（共 ${v.length} 项）</option>`)
@@ -3805,6 +3966,20 @@ function buildLotteryUI() {
     <div class="lottery-panel">
       <div class="lottery-header">🎲 装备抽签台</div>
       <div class="lottery-body">
+
+        <!-- 装备库管理 -->
+        <div class="pools-mgmt">
+          <div class="pools-mgmt-title">⚙ 装备库管理</div>
+          <div class="pools-actions">
+            <button class="pools-btn pools-btn-export" onclick="exportPools()">导出 JSON</button>
+            <label class="pools-btn pools-btn-import">导入 JSON
+              <input type="file" accept=".json,application/json" onchange="importPoolsFromFile(event)">
+            </label>
+            <button class="pools-btn pools-btn-reset" onclick="resetPools()">恢复默认</button>
+          </div>
+          <div class="pools-status" id="pools-status"></div>
+          <div class="pools-summary">${buildPoolsSummary()}</div>
+        </div>
 
         <!-- ① 成功等级判定 -->
         <div style="font-size:13px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:12px;">① 成功等级判定（印章专用）</div>
@@ -3901,6 +4076,20 @@ function renderPage(page) {
   const content = document.getElementById('content');
   const rendered = markdownToHtml(page.content || '');
 
+  if (page.id === 'equipment-lottery') {
+    content.innerHTML = `
+      <div class="page-header">
+        <div class="page-tag">${page.icon} ${page.tag || page.category}</div>
+        <div class="page-title">${page.title}</div>
+        ${page.desc ? `<div class="page-desc">${page.desc}</div>` : ''}
+      </div>
+      ${buildLotteryUI()}
+    `;
+    document.getElementById('edit-btn').classList.remove('show');
+    levelUpdateThresholds();
+    return;
+  }
+
   content.innerHTML = `
     <div class="page-header">
       <div class="page-tag">${page.icon} ${page.tag || page.category}</div>
@@ -3908,15 +4097,10 @@ function renderPage(page) {
       ${page.desc ? `<div class="page-desc">${page.desc}</div>` : ''}
     </div>
     <div class="wiki-content">${rendered}</div>
-    ${page.id === 'equipment' ? buildLotteryUI() : ''}
   `;
 
   // Show edit button if unlocked
   document.getElementById('edit-btn').classList.toggle('show', userPerms.can_edit);
-
-  if (page.id === 'equipment') {
-    levelUpdateThresholds();
-  }
 }
 
 // ===== MARKDOWN RENDERER =====
@@ -4234,6 +4418,7 @@ document.addEventListener('keydown', e => {
 
 // ===== INIT =====
 async function init() {
+  loadPoolsFromStorage();
   await loadConfig();
   await loadToken();
   await loadPages();
