@@ -984,6 +984,270 @@
     #main { margin-left: 220px; }
     #content { padding: 24px 24px; }
   }
+
+  /* ===== EQUIPMENT LOTTERY ===== */
+  .lottery-panel {
+    margin-top: 36px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(180,134,11,0.03);
+    overflow: hidden;
+  }
+  .lottery-header {
+    background: linear-gradient(90deg, rgba(180,134,11,0.14), transparent);
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 3px;
+  }
+  .lottery-body { padding: 20px; }
+  .lottery-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+  }
+  .lottery-control-group { display: flex; flex-direction: column; gap: 5px; }
+  .lottery-label {
+    font-size: 11px;
+    color: var(--smoke);
+    letter-spacing: 1px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .lottery-select, .lottery-input {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  .lottery-select:focus, .lottery-input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .lottery-input { width: 76px; text-align: center; }
+  .lottery-notation {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 1px;
+    padding: 7px 0 6px;
+  }
+  .lottery-btn {
+    padding: 8px 22px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .lottery-btn:hover { filter: brightness(1.12); }
+  .lottery-btn:active { transform: scale(0.96); }
+  .lottery-result {
+    min-height: 70px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--paper2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lottery-result-empty {
+    color: var(--smoke);
+    font-size: 13px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .lottery-result-content { text-align: center; width: 100%; }
+  .lottery-roll-detail {
+    font-size: 12px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 6px;
+  }
+  .lottery-item-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 14px rgba(180,134,11,0.25);
+    animation: lotteryFadeIn 0.3s ease;
+  }
+  .lottery-item-index {
+    font-size: 12px;
+    color: var(--smoke);
+    margin-top: 5px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  @keyframes lotteryFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .lottery-divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 20px 0;
+  }
+  .lottery-query-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ===== SUCCESS LEVEL SECTION ===== */
+  .level-threshold {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 18px;
+  }
+  .lvl-tag {
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .lvl-da     { background: rgba(180,134,11,0.12); color: #a07800; border: 1px solid #c9a020; }
+  .lvl-ji     { background: rgba(120,60,180,0.08); color: #7040b0; border: 1px solid #9060c8; }
+  .lvl-kun    { background: rgba(30,80,180,0.09); color: #2050a0; border: 1px solid #4070cc; }
+  .lvl-pu     { background: rgba(20,120,60,0.09); color: #1a6038; border: 1px solid #2e8b57; }
+  .lvl-shi    { background: rgba(100,100,100,0.08); color: var(--smoke); border: 1px solid #bbb; }
+  .lvl-dashi  { background: rgba(139,26,26,0.1); color: var(--red); border: 1px solid #a03030; }
+
+  .level-roll-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .lottery-btn-ghost {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    color: var(--gold);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .lottery-btn-ghost:hover { background: rgba(180,134,11,0.1); }
+  .lottery-btn-ghost:active { transform: scale(0.96); }
+
+  .level-result {
+    min-height: 80px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--paper2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .level-result-inner { width: 100%; }
+  .level-d100 {
+    font-size: 12px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 4px;
+  }
+  .level-grade {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    animation: lotteryFadeIn 0.3s ease;
+    margin: 2px 0 4px;
+  }
+  .level-sub {
+    font-size: 12px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 12px;
+  }
+  .grade-da    { color: #a07800; text-shadow: 0 0 14px rgba(180,134,11,0.35); }
+  .grade-ji    { color: #7040b0; text-shadow: 0 0 12px rgba(120,60,180,0.3); }
+  .grade-kun   { color: #2050a0; text-shadow: 0 0 12px rgba(30,80,180,0.3); }
+  .grade-pu    { color: #1a6038; text-shadow: 0 0 12px rgba(20,120,60,0.3); }
+  .grade-shi   { color: var(--smoke); }
+  .grade-dashi { color: var(--red); text-shadow: 0 0 12px rgba(139,26,26,0.35); }
+
+  /* ===== POOLS IMPORT/EXPORT ===== */
+  .pools-mgmt {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 16px;
+    background: rgba(180,134,11,0.03);
+    margin-bottom: 20px;
+  }
+  .pools-mgmt-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--smoke);
+    letter-spacing: 2px;
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 10px;
+  }
+  .pools-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pools-btn {
+    padding: 6px 14px;
+    border-radius: 3px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pools-btn-export {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+  }
+  .pools-btn-export:hover { background: rgba(180,134,11,0.1); }
+  .pools-btn-import {
+    background: transparent;
+    border: 1px solid var(--jade2);
+    color: var(--jade2);
+    position: relative;
+    overflow: hidden;
+  }
+  .pools-btn-import:hover { background: rgba(46,139,87,0.08); }
+  .pools-btn-import input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+  }
+  .pools-btn-reset {
+    background: transparent;
+    border: 1px solid var(--smoke);
+    color: var(--smoke);
+  }
+  .pools-btn-reset:hover { border-color: var(--red); color: var(--red); }
+  .pools-status {
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 8px;
+    min-height: 16px;
+    transition: color 0.2s;
+  }
+  .pools-summary {
+    font-size: 11px;
+    color: var(--smoke);
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 6px;
+  }
 </style>
 
 <style>
@@ -3100,6 +3364,15 @@ const DEFAULT_PAGES = [
 | 七宝璎珞 | 青铜纵目 | 朱雀翎 |
 | 玄武甲片 | 青龙逆鳞 | 白虎牙饰 |
 | 望舒簪 | 羲和璧 | — |`
+  },
+  {
+    id: 'equipment-lottery',
+    title: '装备抽签台',
+    icon: '🎲',
+    category: '道具系统',
+    tag: '抽签',
+    desc: '装备池掷骰工具：rd100 成功等级判定 + 各部位指定抽签，支持 JSON 导入导出管理装备库。',
+    content: ''
   }
 ];
 
@@ -3397,6 +3670,404 @@ function navigate(id) {
   }, 200);
 }
 
+// ===== EQUIPMENT LOTTERY =====
+const BASE_EQUIP_POOLS = {
+  '印章·大成功': ['万年寒玉印','雷霆都司印','灵宝大法司印','红莲火印','司辰挂印'],
+  '印章·极难':  ['五雷斩勘印','金光抖银印','天挂水印','斩妖缚邪印','北极驱邪印','紫府丹鼎印','五岳真形印','铁麟印','阴阳八卦印'],
+  '印章·困难':  ['九天玄女印','幽冥印','太乙救苦天尊印','玉皇敕命印','东极青华印','南极长生印','二十八宿印','雷击木印','摄召亡魂印','禹步锁关印','净明法主印'],
+  '印章·普通':  ['桃木斩邪印','青铜符咒印','破损的红莲火印','朱砂丹鼎印','黑石镇煞印','黄铜法事印','灵竹清心印','净水去秽印','白石守一印','松纹剑令印'],
+  '印章·失败':  ['阴煞反噬印','赤血催功印','三枯三荣印','折寿问天印','五鬼搬运印'],
+  '印章·大失败':['裂魂分神印','朽木难支印','饮鸩止渴印','怨骨缠身印','破瓦碎运印'],
+  '胸甲·轻甲':  ['飞云氅','蝉翼衫','流风袍','竹影甲','燕翎铠','月华帔','霓裳羽衣','龙绡软甲','步光铠','百草霜衣','纸鸢甲','松烟战袍','镜花水月','柳叶绵甲','青萍履甲','蝶舞护心','千蝉丝甲','浮光掠影','稥狐裘甲','无尘道衣'],
+  '胸甲·重甲':  ['不动明王铠','玄武镇岳甲','龙鳞撼地铠','饕餮吞肩','山岳担肩','朱雀焚城甲','麒麟踏云铠','刑天舞干戚','夔牛震鼓铠','狴犴司狱甲','睚眦必报铠','赑屃负碑甲','混沌玄甲','穷奇掠空铠','烛龙衔炎甲','白泽辟邪铠','毕方雳天甲','重玄铁浮屠','陨星千钧甲','玄甲·苍云'],
+  '头盔':       ['龙首兜鍪','凤翅盔','七星额子','朱雀冠','白虎盔','玄武盔','麒麟盔','狻猊盔','饕餮盔','穷奇盔','混沌盔','梼杌盔','毕方盔','白泽盔','飞廉盔','刑天盔','山文盔','镜面盔','笠铁盔','金瓯冠'],
+  '腿甲':       ['岳峙胫甲','风行绑腿','玄武腿缚','登云靴甲','混沌腿铠','石犀护腿','灵鹤胫甲','虎胫护膝','磐石腿甲','追月胫甲','夔牛战靴','金乌飞羽','蝉影护胫','贪狼腿铠','墨家机关胫','烛龙胫甲','不动尊护膝','八卦阵图腿甲'],
+  '饰品':       ['同心环','相思红豆','步摇金钗','君子玉块','玲珑骰子','安息香囊','七宝璎珞','青铜纵目','朱雀翎','玄武甲片','青龙逆鳞','白虎牙饰','望舒簪','羲和璧']
+};
+
+let EQUIP_POOLS = Object.assign({}, BASE_EQUIP_POOLS);
+const POOLS_STORAGE_KEY = 'novem-equip-pools-v1';
+
+function loadPoolsFromStorage() {
+  try {
+    const saved = localStorage.getItem(POOLS_STORAGE_KEY);
+    if (saved) EQUIP_POOLS = JSON.parse(saved);
+  } catch(e) {}
+}
+
+function savePoolsToStorage() {
+  try { localStorage.setItem(POOLS_STORAGE_KEY, JSON.stringify(EQUIP_POOLS)); } catch(e) {}
+}
+
+function exportPools() {
+  const json = JSON.stringify(EQUIP_POOLS, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '装备池.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importPoolsFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    applyPoolsImport(e.target.result);
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function applyPoolsImport(text) {
+  try {
+    const data = JSON.parse(text);
+    if (typeof data !== 'object' || Array.isArray(data)) throw new Error('顶层须为 JSON 对象');
+    for (const [k, v] of Object.entries(data)) {
+      if (!Array.isArray(v)) throw new Error(`"${k}" 的值须为字符串数组`);
+      if (v.some(x => typeof x !== 'string')) throw new Error(`"${k}" 数组含有非字符串元素`);
+      if (v.length === 0) throw new Error(`"${k}" 数组不能为空`);
+    }
+    if (Object.keys(data).length === 0) throw new Error('装备池不能为空对象');
+    EQUIP_POOLS = data;
+    savePoolsToStorage();
+    refreshLotteryPage('✅ 导入成功，共 ' + Object.keys(data).length + ' 个池');
+  } catch(e) {
+    showPoolsStatus('❌ 导入失败：' + e.message, true);
+  }
+}
+
+function resetPools() {
+  if (!confirm('恢复为内置默认装备池？自定义数据将丢失。')) return;
+  EQUIP_POOLS = Object.assign({}, BASE_EQUIP_POOLS);
+  localStorage.removeItem(POOLS_STORAGE_KEY);
+  refreshLotteryPage('✅ 已恢复默认装备库');
+}
+
+function refreshLotteryPage(statusMsg) {
+  const page = pages.find(p => p.id === 'equipment-lottery');
+  if (page && currentPage === 'equipment-lottery') renderPage(page);
+  if (statusMsg) showPoolsStatus(statusMsg, false);
+}
+
+function showPoolsStatus(msg, isError) {
+  const el = document.getElementById('pools-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--red)' : 'var(--jade2)';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.textContent = ''; }, 5000);
+}
+
+function lotteryCurrentPool() {
+  const sel = document.getElementById('lottery-pool-select');
+  return sel ? EQUIP_POOLS[sel.value] : null;
+}
+
+function lotteryPoolChanged() {
+  const pool = lotteryCurrentPool();
+  const maxInput = document.getElementById('lottery-dice-max');
+  if (maxInput && !maxInput._userEdited && pool) {
+    maxInput.value = pool.length;
+  }
+  lotteryUpdateNotation();
+}
+
+function lotteryUpdateNotation() {
+  const n = parseInt(document.getElementById('lottery-dice-count')?.value) || 1;
+  const m = parseInt(document.getElementById('lottery-dice-max')?.value) || '?';
+  const pool = lotteryCurrentPool();
+  const el = document.getElementById('lottery-notation');
+  if (el) el.textContent = `${n}d${m}　　池大小：${pool ? pool.length : '—'} 项`;
+}
+
+function lotteryRoll() {
+  const pool = lotteryCurrentPool();
+  if (!pool) return;
+  const n = Math.max(1, parseInt(document.getElementById('lottery-dice-count')?.value) || 1);
+  const m = Math.max(2, parseInt(document.getElementById('lottery-dice-max')?.value) || pool.length);
+  const rolls = Array.from({length: n}, () => Math.floor(Math.random() * m) + 1);
+  const total = rolls.reduce((a, b) => a + b, 0);
+  lotteryShowResult(pool, total, rolls, n, m);
+}
+
+function lotteryShowResult(pool, total, rolls, n, m) {
+  const idx = ((total - 1) % pool.length + pool.length) % pool.length;
+  const item = pool[idx];
+  const resultEl = document.getElementById('lottery-result');
+  if (!resultEl) return;
+  const rollStr = rolls
+    ? (rolls.length > 1 ? `[${rolls.join(' + ')}] = ${total}` : `${total}`)
+    : `查询点数 ${total}`;
+  const diceInfo = rolls ? `${n}d${m} — ` : '';
+  resultEl.innerHTML = `
+    <div class="lottery-result-content">
+      <div class="lottery-roll-detail">${diceInfo}${rollStr}</div>
+      <div class="lottery-item-name">${item}</div>
+      <div class="lottery-item-index">第 ${idx + 1} 号 ／ 共 ${pool.length} 项</div>
+    </div>
+  `;
+}
+
+function lotteryQuery() {
+  const pool = lotteryCurrentPool();
+  if (!pool) return;
+  const val = parseInt(document.getElementById('lottery-query-input')?.value);
+  if (isNaN(val) || val < 1) return;
+  lotteryShowResult(pool, val, null, null, null);
+}
+
+// ===== SUCCESS LEVEL DETERMINATION =====
+const LEVEL_POOL_MAP = {
+  '大成功': '印章·大成功',
+  '极难':   '印章·极难',
+  '困难':   '印章·困难',
+  '普通':   '印章·普通',
+  '失败':   '印章·失败',
+  '大失败': '印章·大失败'
+};
+const LEVEL_CSS = {
+  '大成功': 'grade-da',
+  '极难':   'grade-ji',
+  '困难':   'grade-kun',
+  '普通':   'grade-pu',
+  '失败':   'grade-shi',
+  '大失败': 'grade-dashi'
+};
+
+let _levelPendingPool = null; // holds pool between step-by-step clicks
+
+function levelThresholds(skill) {
+  skill = Math.max(1, Math.min(100, skill));
+  return {
+    daCheng: Math.max(1, Math.floor(skill / 5)),
+    jiNan:   Math.max(2, Math.floor(skill / 3)),
+    kunNan:  Math.max(3, Math.floor(skill / 2)),
+    putong:  skill
+  };
+}
+
+function levelClassify(roll, skill) {
+  if (roll >= 96)                         return '大失败';
+  const t = levelThresholds(skill);
+  if (roll > t.putong)                    return '失败';
+  if (roll <= t.daCheng)                  return '大成功';
+  if (roll <= t.jiNan)                    return '极难';
+  if (roll <= t.kunNan)                   return '困难';
+  return '普通';
+}
+
+function levelUpdateThresholds() {
+  const skill = parseInt(document.getElementById('level-skill')?.value) || 50;
+  const t = levelThresholds(skill);
+  const el = document.getElementById('level-threshold-display');
+  if (!el) return;
+  el.innerHTML = `
+    <span class="lvl-tag lvl-da">大成功 ≤${t.daCheng}</span>
+    <span class="lvl-tag lvl-ji">极难 ≤${t.jiNan}</span>
+    <span class="lvl-tag lvl-kun">困难 ≤${t.kunNan}</span>
+    <span class="lvl-tag lvl-pu">普通 ≤${t.putong}</span>
+    <span class="lvl-tag lvl-shi">失败 ≤95</span>
+    <span class="lvl-tag lvl-dashi">大失败 96~100</span>
+  `;
+}
+
+function levelGradeHTML(grade, d100, pool, showNextBtn) {
+  const css = LEVEL_CSS[grade];
+  const poolName = LEVEL_POOL_MAP[grade];
+  const btn = showNextBtn
+    ? `<button class="lottery-btn" style="margin-top:10px;" onclick="levelStepTwo()">下一步：取装备</button>`
+    : '';
+  return `
+    <div class="level-d100">1d100 — ${d100}</div>
+    <div class="level-grade ${css}">${grade}</div>
+    <div class="level-sub">${poolName}（共 ${pool.length} 项）</div>
+    ${btn}
+  `;
+}
+
+function levelItemHTML(pool, dM, roll) {
+  const idx = roll - 1;
+  return `
+    <hr class="lottery-divider" style="margin:12px 0 10px;">
+    <div class="lottery-roll-detail">1d${pool.length} — ${dM}</div>
+    <div class="lottery-item-name">${pool[idx]}</div>
+    <div class="lottery-item-index">第 ${idx + 1} 号 ／ 共 ${pool.length} 项</div>
+  `;
+}
+
+function levelStepOne() {
+  const skill = parseInt(document.getElementById('level-skill')?.value) || 50;
+  const d100  = Math.floor(Math.random() * 100) + 1;
+  const grade = levelClassify(d100, skill);
+  _levelPendingPool = EQUIP_POOLS[LEVEL_POOL_MAP[grade]];
+  const el = document.getElementById('level-result');
+  if (!el) return;
+  el.innerHTML = `<div class="level-result-inner">${levelGradeHTML(grade, d100, _levelPendingPool, true)}</div>`;
+}
+
+function levelStepTwo() {
+  if (!_levelPendingPool) return;
+  const pool = _levelPendingPool;
+  const dM   = Math.floor(Math.random() * pool.length) + 1;
+  const inner = document.querySelector('#level-result .level-result-inner');
+  if (!inner) return;
+  const btn = inner.querySelector('button');
+  if (btn) btn.remove();
+  inner.insertAdjacentHTML('beforeend', levelItemHTML(pool, dM, dM));
+  _levelPendingPool = null;
+}
+
+function levelRollAll() {
+  const skill = parseInt(document.getElementById('level-skill')?.value) || 50;
+  const d100  = Math.floor(Math.random() * 100) + 1;
+  const grade = levelClassify(d100, skill);
+  const pool  = EQUIP_POOLS[LEVEL_POOL_MAP[grade]];
+  const dM    = Math.floor(Math.random() * pool.length) + 1;
+  const el    = document.getElementById('level-result');
+  if (!el) return;
+  _levelPendingPool = null;
+  el.innerHTML = `<div class="level-result-inner">
+    ${levelGradeHTML(grade, d100, pool, false)}
+    ${levelItemHTML(pool, dM, dM)}
+  </div>`;
+}
+
+// Also support querying by known d100 value
+function levelQuery() {
+  const skill = parseInt(document.getElementById('level-skill')?.value) || 50;
+  const val   = parseInt(document.getElementById('level-query-input')?.value);
+  if (isNaN(val) || val < 1 || val > 100) return;
+  const grade = levelClassify(val, skill);
+  const pool  = EQUIP_POOLS[LEVEL_POOL_MAP[grade]];
+  const el    = document.getElementById('level-result');
+  if (!el) return;
+  _levelPendingPool = pool;
+  el.innerHTML = `<div class="level-result-inner">${levelGradeHTML(grade, val, pool, true)}</div>`;
+}
+
+function buildPoolsSummary() {
+  const entries = Object.entries(EQUIP_POOLS);
+  const total = entries.reduce((s, [, v]) => s + v.length, 0);
+  return `${entries.length} 个池 · 共 ${total} 件装备` +
+    (localStorage.getItem(POOLS_STORAGE_KEY) ? '　<span style="color:var(--jade2)">●</span> 自定义数据' : '　<span style="color:var(--smoke)">●</span> 默认数据');
+}
+
+function buildLotteryUI() {
+  const opts = Object.entries(EQUIP_POOLS)
+    .map(([k, v]) => `<option value="${k}">${k}（共 ${v.length} 项）</option>`)
+    .join('');
+  const firstPool = Object.values(EQUIP_POOLS)[0];
+  return `
+    <div class="lottery-panel">
+      <div class="lottery-header">🎲 装备抽签台</div>
+      <div class="lottery-body">
+
+        <!-- 装备库管理 -->
+        <div class="pools-mgmt">
+          <div class="pools-mgmt-title">⚙ 装备库管理</div>
+          <div class="pools-actions">
+            <button class="pools-btn pools-btn-export" onclick="exportPools()">导出 JSON</button>
+            <label class="pools-btn pools-btn-import">导入 JSON
+              <input type="file" accept=".json,application/json" onchange="importPoolsFromFile(event)">
+            </label>
+            <button class="pools-btn pools-btn-reset" onclick="resetPools()">恢复默认</button>
+          </div>
+          <div class="pools-status" id="pools-status"></div>
+          <div class="pools-summary">${buildPoolsSummary()}</div>
+        </div>
+
+        <!-- ① 成功等级判定 -->
+        <div style="font-size:13px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:12px;">① 成功等级判定（印章专用）</div>
+        <div class="lottery-controls" style="margin-bottom:10px;">
+          <div class="lottery-control-group">
+            <div class="lottery-label">技能值（1~100）</div>
+            <input id="level-skill" type="number" class="lottery-input" value="50" min="1" max="100"
+              oninput="levelUpdateThresholds()" style="width:80px;">
+          </div>
+          <div class="lottery-control-group" style="flex:1;min-width:200px;">
+            <div class="lottery-label">判定阈值</div>
+            <div id="level-threshold-display" class="level-threshold" style="margin:0;"></div>
+          </div>
+        </div>
+        <div class="level-roll-btns" style="margin-bottom:14px;">
+          <button class="lottery-btn" onclick="levelStepOne()">分步：判定成功等级</button>
+          <button class="lottery-btn-ghost" onclick="levelRollAll()">一键：判定 + 取装备</button>
+        </div>
+        <div id="level-result" class="level-result">
+          <div class="lottery-result-empty">选择模式后点击掷骰</div>
+        </div>
+
+        <div class="lottery-query-row" style="margin-top:14px;">
+          <div class="lottery-control-group">
+            <div class="lottery-label">已知 d100 点数，直接查成功等级</div>
+            <input id="level-query-input" type="number" class="lottery-input" min="1" max="100" placeholder="—"
+              onkeydown="if(event.key==='Enter') levelQuery()">
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">&nbsp;</div>
+            <button class="lottery-btn-ghost" onclick="levelQuery()">查询等级</button>
+          </div>
+        </div>
+
+        <hr class="lottery-divider">
+
+        <!-- ② 指定池抽签 -->
+        <div style="font-size:13px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:12px;">② 指定池抽签（全部位通用）</div>
+        <div class="lottery-controls">
+          <div class="lottery-control-group">
+            <div class="lottery-label">装备池（部位）</div>
+            <select id="lottery-pool-select" class="lottery-select" onchange="lotteryPoolChanged()">
+              ${opts}
+            </select>
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">骰子数量</div>
+            <input id="lottery-dice-count" type="number" class="lottery-input" value="1" min="1" max="20"
+              oninput="lotteryUpdateNotation()">
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">点数上限</div>
+            <input id="lottery-dice-max" type="number" class="lottery-input" value="${firstPool.length}" min="2" max="999"
+              oninput="this._userEdited=true; lotteryUpdateNotation()">
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">骰型</div>
+            <div class="lottery-notation" id="lottery-notation">1d${firstPool.length}　　池大小：${firstPool.length} 项</div>
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">&nbsp;</div>
+            <button class="lottery-btn" onclick="lotteryRoll()">掷骰</button>
+          </div>
+        </div>
+
+        <div id="lottery-result" class="lottery-result">
+          <div class="lottery-result-empty">点击「掷骰」开始抽签，结果将显示于此</div>
+        </div>
+
+        <hr class="lottery-divider">
+
+        <div class="lottery-label" style="margin-bottom:10px;">📋 查询 — 外部已扔骰子，输入点数查看对应装备</div>
+        <div class="lottery-query-row">
+          <div class="lottery-control-group">
+            <div class="lottery-label">骰子结果（总和）</div>
+            <input id="lottery-query-input" type="number" class="lottery-input" min="1" placeholder="—"
+              onkeydown="if(event.key==='Enter') lotteryQuery()">
+          </div>
+          <div class="lottery-control-group">
+            <div class="lottery-label">&nbsp;</div>
+            <button class="lottery-btn" onclick="lotteryQuery()">查询</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ===== RENDER PAGE =====
 function renderPage(page) {
   document.getElementById('breadcrumb').innerHTML = `玖镇秘典 <span>›</span> ${page.category} <span>›</span> ${page.title}`;
@@ -3404,6 +4075,20 @@ function renderPage(page) {
 
   const content = document.getElementById('content');
   const rendered = markdownToHtml(page.content || '');
+
+  if (page.id === 'equipment-lottery') {
+    content.innerHTML = `
+      <div class="page-header">
+        <div class="page-tag">${page.icon} ${page.tag || page.category}</div>
+        <div class="page-title">${page.title}</div>
+        ${page.desc ? `<div class="page-desc">${page.desc}</div>` : ''}
+      </div>
+      ${buildLotteryUI()}
+    `;
+    document.getElementById('edit-btn').classList.remove('show');
+    levelUpdateThresholds();
+    return;
+  }
 
   content.innerHTML = `
     <div class="page-header">
@@ -3733,6 +4418,7 @@ document.addEventListener('keydown', e => {
 
 // ===== INIT =====
 async function init() {
+  loadPoolsFromStorage();
   await loadConfig();
   await loadToken();
   await loadPages();
